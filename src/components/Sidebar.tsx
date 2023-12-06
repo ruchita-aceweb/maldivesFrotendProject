@@ -4,7 +4,7 @@ import Logo from '../images/logo/logo.svg';
 import SidebarLinkGroup from './SidebarLinkGroup';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
-const apiUrl = 'https://baatestapi.hash.mv/';
+const apiUrl = 'http://localhost:3005/';
 const requestConfig = {
   headers: {
     'token': localStorage.getItem('token'),

@@ -21,7 +21,7 @@ import {RequireAuth} from './js/auth/RequireAuth';
 
  import axios from 'axios' //${apiUrl}
 
-const verifyUrl= 'https://baatestapi.hash.mv/user/verify';
+const verifyUrl= 'http://localhost:3005/user/verify';
 
 const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
 
@@ -55,10 +55,12 @@ function App() {
   }
 
   useEffect(() => {
-   if( (token=== null)){
-         navigate('/auth/signin') 
-       
-       }
+    if( (token=== null) &&(window.location.href.split("?time_samp=")[1] ==undefined)){
+       navigate('/auth/signin') 
+        
+        }
+  
+      
     setTimeout(() => setLoading(false), 1000);
     
    

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 const SignIn = () => {
-  const apiUrl = 'https://baatestapi.hash.mv/';
+  const apiUrl = 'http://localhost:3005/';
   const navigate = useNavigate();
 
   const [username,setUsername] = useState('')

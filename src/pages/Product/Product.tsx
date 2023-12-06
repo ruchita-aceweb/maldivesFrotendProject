@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const TableOne = () => {
-  const apiUrl = 'https://baatestapi.hash.mv/';
+  const apiUrl = 'http://localhost:3005/';
   const requestConfig = {
     headers: {
       'token': localStorage.getItem('token'),

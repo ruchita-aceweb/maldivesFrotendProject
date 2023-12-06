@@ -49,7 +49,7 @@ const UserList = () => {
     const [showPermission, setShowPermission] = useState(false);
     const [query, setQuery] = useState("")
 
-    const apiUrl = 'https://baatestapi.hash.mv/';
+    const apiUrl = 'http://localhost:3005/';
     const requestConfig = {
         headers: {
             'token': localStorage.getItem('token'),

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Settings = () => {
     const navigate = useNavigate();
-    const apiUrl = 'https://baatestapi.hash.mv/';
+    const apiUrl = 'http://localhost:3005/';
     const requestConfig = {
         headers: {
             'token': localStorage.getItem('token'),

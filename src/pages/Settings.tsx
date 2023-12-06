@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Settings = () => {
   const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-  const apiUrl = 'https://baatestapi.hash.mv/';
+  const apiUrl = 'http://localhost:3005/';
   const requestConfig = {
     headers: {
       'token': localStorage.getItem('token'),
@@ -539,7 +539,7 @@ const Settings = () => {
                
                  {/* <div>
 
-                   <img src='https://baatestapi.hash.mv/pdf/file-1700799972947.png' alt="Uploaded" style={{ maxWidth: '100%' }} />
+                   <img src='http://localhost:3005/pdf/file-1700799972947.png' alt="Uploaded" style={{ maxWidth: '100%' }} />
                  </div> */}
              
              </div>
