@@ -556,7 +556,7 @@ const Settings = () => {
                >
                  <input
                    type="file"
-                   onChange={handleFileChange}
+                   onChange={handleFileChange} 
                    accept="image/*"
                    id="file-input"
                    className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
