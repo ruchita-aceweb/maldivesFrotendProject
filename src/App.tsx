@@ -11,6 +11,9 @@ import Settings from './pages/Settings./Settings';
 import Services from './pages/Service/Services';
 import AddServices from './pages/Service/AddServices';
 import EditServices from './pages/Service/EditServices';
+import UpdateService from './pages/Service/UpdateService';
+import ServiceRequests from './pages/Service/ServiceRequests';
+import ViewMore from './pages/Service//ViewMore';
 import UserList from './pages/admin/UserList';
 import MyProfile from './pages/Settings';
 import Loader from './common/Loader';
@@ -102,8 +105,11 @@ function App() {
           <Route path='/setting' element={<RequireAuth><Settings/></RequireAuth>}></Route>
           <Route path='/service' element={<RequireAuth><Services/></RequireAuth>}></Route>
           <Route path='/add/service' element={<RequireAuth><AddServices/></RequireAuth>}></Route>
+          <Route path='/view/more/:id?' element={<RequireAuth><ViewMore/></RequireAuth>}></Route>
+          <Route path='/service-request' element={<RequireAuth><ServiceRequests/></RequireAuth>}></Route>
           <Route path='/service/edit/:id?' element={<RequireAuth><EditServices/></RequireAuth>}></Route>
-
+          <Route path='/update/service/:id?' element={<RequireAuth><UpdateService/></RequireAuth>}></Route>
+          
           {routes.map((routes, index) => {
             const { path, component: Component } = routes;
             return (

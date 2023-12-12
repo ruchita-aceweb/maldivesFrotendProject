@@ -36,7 +36,7 @@ const [service_type, setServiceType] = useState('');
     }
   }
   
-  const [selectedFilesNewOwner, setSelectedFileNewOwner] = useState<File | null>(null);
+  const [selectedFilesNewOwner, setSelectedFileNewOwner] = useState<File | null>(null); 
   const [selectedFilesCurrentOwner, setSelectedFileCurrentOwner] = useState<File | null>(null);
   const [selectedFilesRegistry, setSelectedFileNewRegistry] = useState<File | null>(null);
   const navigate = useNavigate();
@@ -121,33 +121,32 @@ const [service_type, setServiceType] = useState('');
       toast.error("Please select the vehicle model", { theme: 'colored' })
     }
     else{
+      var data =[{
+        vehicle_type:values.vehicle_type,
+        vehicle_number:values.vehicle_number,
+        model:values.model,
+        engine_serial_no:values.engine_serial_no,
+      }]
       const formData = new FormData();
     formData.append('type', String('vehicle_registry_copy'));
     formData.append('uu_id', String(requestConfig.headers.uu_id));
     formData.append('file_1',selectedFilesNewOwner);  
     formData.append('file_2',selectedFilesRegistry); 
     formData.append('file_3', selectedFilesCurrentOwner);
-    formData.append('service_type',service_type);   
-    formData.append('vehicle_type',values.vehicle_type);
-    formData.append('vehicle_number', values.vehicle_number);
-    formData.append('model',values.model);
-    formData.append('engine_serial_no', values.engine_serial_no);
+    formData.append('service_type',service_type);  
+    formData.append('data',JSON.stringify(data));  
+  //  formData.append('vehicle_type',values.vehicle_type);
+   // formData.append('vehicle_number', values.vehicle_number);
+   // formData.append('model',values.model);
+  //  formData.append('engine_serial_no', values.engine_serial_no);
  
-    // try {
-    //   const response = await axios.post(`${apiUrl}user/images/upload`, formData, requestConfig);
-    //   toast.success("New Service Request Added", { theme: 'colored' })
-    //   console.log('Upload successful:', response.data);
-    //   setValues(initialFValues)
-    //   setShow(false)
-      
-    // } catch (error) {
-    //   console.error('Error uploading image:', error);
-     
-     
-    // }
+
     await axios.post(`${apiUrl}user/images/upload`, formData, requestConfig).then(response => {
       toast.success("New Service Request Added", { theme: 'colored' })
       setValues(initialFValues)
+      setSelectedFileNewOwner(null) 
+       setSelectedFileCurrentOwner(null)
+        setSelectedFileNewRegistry(null)
       setShow(false)
     }).catch(error => {
       toast.error(error.response.data.error, { theme: 'colored' })
@@ -201,12 +200,6 @@ const [service_type, setServiceType] = useState('');
             <label className="mb-3 block text-black dark:text-white">
               Service Type
             </label>
-            {/* <input
-              type="text"
-              placeholder="Service Type"
-               name="gender" value={gender} onChange={(e) => setGender(e.target.value)}
-              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-            /> */}
             <select
               id="gender" 
               name="service_type" value={service_type} onChange={handleSelectChange}
@@ -214,10 +207,10 @@ const [service_type, setServiceType] = useState('');
               className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
             >
               <option value="" selected>Select a service</option>
-              <option value="marine">Marine Vehicle Registry</option>
-              <option value="road">Road Worthiness</option>
-              <option value="hull">Hull Number</option>
-              <option value="land">Land Vehicle Registry</option>
+              <option value="Marine Vehicle Registry">Marine Vehicle Registry</option>
+              <option value="Road Worthiness">Road Worthiness</option>
+              <option value="Hull Number">Hull Number</option>
+              <option value="Land Vehicle Registry">Land Vehicle Registry</option>
             </select>
 
           </div>
@@ -244,6 +237,13 @@ const [service_type, setServiceType] = useState('');
            placeholder="Vehicle Number"
            className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-11 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
          />
+
+{/* <input
+           name="vehicle_number_11" value={values.vehicle_number_11} onChange={handleInputChange}
+           type="text"
+           placeholder="dsdsds"
+           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-11 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+         /> */}
        </div>
        <div className="flex-col">
          <label className="mb-3 block text-black dark:text-white">
@@ -449,6 +449,8 @@ const [service_type, setServiceType] = useState('');
        </div>
 
      </div>
+
+
    </div>
    </div>
   }

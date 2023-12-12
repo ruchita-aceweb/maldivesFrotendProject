@@ -202,37 +202,7 @@ const UserList = () => {
         else if (values_add_users.last_name == '') {
             toast.error("Please check your last name", { theme: 'colored' })
         }
-        // else if (values_add_users.phone_number == '') {
-        //     toast.error("Please check your  phone number", { theme: 'colored' })
-        // }
-        // else if (values_add_users.password == '') {
-        //     toast.error("Please check your password", { theme: 'colored' })
-        // }
-
-        // else if (values_add_users.username == '') {
-        //     toast.error("Please check your username", { theme: 'colored' })
-        // }
-        // else if (values_add_users.address == '') {
-        //     toast.error("Please check your address", { theme: 'colored' })
-        // }
-        // else if (values_add_users.city == '') {
-        //     toast.error("Please check your city", { theme: 'colored' })
-        // }
-        // else if (values_add_users.state == '') {
-        //     toast.error("Please check your state", { theme: 'colored' })
-        // }
-        // else if (gender == '') {
-        //     toast.error("Please check your gender", { theme: 'colored' })
-        // }
-        // else if (values_add_users.confirm_password == '') {
-        //     toast.error("Please check your confirm password", { theme: 'colored' })
-        // }
-        // else if (values_add_users.confirm_password != values_add_users.password) {
-        //     toast.error("Password do not match", { theme: 'colored' })
-        // }
-        // else if (values_add_users.password.length < 8 || !/[a-z]/.test(values_add_users.password) || !/[A-Z]/.test(values_add_users.password) || !/\d/.test(values_add_users.password) || !/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(values_add_users.password)) {
-        //     toast.error("Check for password at least one lowercase letter,at least one uppercase letter,at least one number,at least one special character and minimum length requirement", { theme: 'colored' })
-        // }
+        
         else {
             const requestBody = {
                 "email": values_add_users.email,
