@@ -81,8 +81,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
      
     await axios.get(`${apiUrl}user/view/logo`, requestConfig).then(response => {
        console.log(response.data.location)
-      
-          setImage_name(response.data.location)
+       setImage_name(`${apiUrl}/pdf/${response.data.location.image_url}`)
+          //setImage_name(response.data.location)
     
     }).catch(error => 
      console.log(error)

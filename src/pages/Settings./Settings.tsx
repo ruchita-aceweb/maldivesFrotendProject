@@ -89,9 +89,9 @@ const Settings = () => {
       const getLogo = async () => {
      
         await axios.get(`${apiUrl}user/view/logo`, requestConfig).then(response => {
-           console.log(response.data.location)
-          
-              setImage_name(response.data.location)
+           //http://localhost:3005/pdf/file-logo.png
+              setImage_name(`${apiUrl}/pdf/${response.data.location.image_url}`)
+             // image_name:`${apiUrl}/${response.data.location.image_url}`
         
         }).catch(error => {
           toast.error(error.response.data.error, { theme: 'colored' })
@@ -152,8 +152,10 @@ const Settings = () => {
           formData.append('file', e.target.files[0]);
           axios.post(`${apiUrl}user/logo/settings`, formData, requestConfig).then(response => {
             getLogo()
+           // console.log()
            // setImage_name(response.data.location)
-            setImage_name(response.data.location)
+           // setImage_name(response.data.location)
+          // setImage_name(`${apiUrl}/pdf/${response.data.location.image_url}`)
             toast.success("New Logo Updated", { theme: 'colored' })
            window.location.reload();
             

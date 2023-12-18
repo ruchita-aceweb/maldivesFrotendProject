@@ -182,6 +182,7 @@ const Settings = () => {
   const getUser = async () => {
     await axios.get(`${apiUrl}user/details`, requestConfig).then(response => {
       //setProductsFilter(response.data.user_details.reverse())
+     
       setValues((prevValues) => ({
         ...prevValues,
         email: response.data.user_details.email,

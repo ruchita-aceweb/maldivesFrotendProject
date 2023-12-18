@@ -5,6 +5,9 @@ import Logo from '../../images/logo/logo.svg';
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import '../../../src/Sass.scss'
+
+
 const SignUp = () => {
   const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
   const apiUrl = 'http://localhost:3005/';
@@ -149,9 +152,13 @@ const SignUp = () => {
 
 }, [])
   return (
+
     <>
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="flex flex-wrap items-center">
+    <div className="signupmain">
+    <div className="mainwrap">
+    <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="wrap">
+      <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="py-17.5 px-26 text-center">
               <Link className="mb-5.5 inline-block" to="/">
@@ -486,8 +493,12 @@ const SignUp = () => {
             </div>
           </div>
         </div>
+      </div>
+       
         <ToastContainer />
       </div>
+      </div>  
+    </div>  
     </>
   );
 };
