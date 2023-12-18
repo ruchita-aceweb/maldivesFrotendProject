@@ -34,7 +34,7 @@ const Settings = () => {
   const [values, setValues] = useState(initialFValues);
   const [gender, setGender] = useState('');
   const [selectedFiles, setSelectedFile] = useState<File | null>(null);
-  const [permission, setPermission] = useState('False');
+  const [permission, setPermission] = useState(false);
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,14 +46,14 @@ const Settings = () => {
   };
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
+      
       setSelectedFile(e.target.files[0]);
+      
     }
   };
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log(values)
-    console.log(gender)
-
+   
     if (!regex.test(values.email) || values.email == '') {
       toast.error("Please check your email", { theme: 'colored' })
     } else if (values.first_name == '') {
@@ -209,9 +209,7 @@ const Settings = () => {
           if(response.data.user_permissions[i].Value){
            setPermission(response.data.user_permissions[i].Value)
           }
-          if(!response.data.user_permissions[i].Value){
-           setPermission('False')
-          }
+          
        }
       }
    }).catch(error => {

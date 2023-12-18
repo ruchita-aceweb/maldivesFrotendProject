@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState ,ChangeEvent} from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import Logo from '../images/logo/logo.svg';
 import SidebarLinkGroup from './SidebarLinkGroup';
@@ -24,13 +24,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const [token, getToken] = useState(localStorage.getItem('token'));
   const trigger = useRef<any>(null);
   const sidebar = useRef<any>(null);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
   const [permission_profile, setPermissionProfile] = useState(false);
   const [permission_product, setPermissionProduct] = useState(false);
   const [permission_settings, setPermissionSettings] = useState(false);
   const [service, serService] = useState(false);
   const [admin, setAdmin] = useState<boolean>(false);
-
+  const [image_name, setImage_name] = useState('');
+ 
   const storedSidebarExpanded = localStorage.getItem('sidebar-expanded');
   const [sidebarExpanded, setSidebarExpanded] = useState(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true'
@@ -42,9 +43,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   // close on click outside
   const getUserPermissions = async () => {
     await axios.get(`${apiUrl}user/permissions`, requestConfig).then(response => {
+      console.log(response.data.user_permissions)
       for (let i = 0; i < response.data.user_permissions.length; i++) {
         if (response.data.user_permissions[i].Name == "profile") {
           setPermissionProfile(response.data.user_permissions[i].Value)
+          console.log(response.data.user_permissions[i].Value)
 
         }
         if (response.data.user_permissions[i].Name == "settings") {
@@ -61,7 +64,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
              setAdmin(response.data.user_permissions[i].Value)
              serService(response.data.user_permissions[i].Value)
              setPermissionProduct(response.data.user_permissions[i].Value)
-             setPermissionProfile(response.data.user_permissions[i].Value)
+             //setPermissionProfile(response.data.user_permissions[i].Value)
+             setPermissionSettings(response.data.user_permissions[i].Value)
       }
         
 
@@ -73,6 +77,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
 
   }
+  const getLogo = async () => {
+     
+    await axios.get(`${apiUrl}user/view/logo`, requestConfig).then(response => {
+       console.log(response.data.location)
+      
+          setImage_name(response.data.location)
+    
+    }).catch(error => 
+     console.log(error)
+    )
+
+
+  }
+ 
   useEffect(() => {
     getUserPermissions()
     const clickHandler = ({ target }: MouseEvent) => {
@@ -88,6 +106,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     document.addEventListener('click', clickHandler);
     return () => document.removeEventListener('click', clickHandler);
   });
+  useEffect(() => {
+    getLogo();
+   
+
+  }, [])
 
   // close if the esc key is pressed
   useEffect(() => {
@@ -124,7 +147,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
         <NavLink to="/">
-          {/* <img src={Logo} alt="Logo" /> */}
+          <img src={image_name} alt="Logo" /> 
+          
+                 
         </NavLink>
 
         <button
@@ -619,7 +644,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               OTHERS
             </h3>
             
-              {(userType  && (permission_settings)) &&
+            {(userType  && (permission_settings)) &&
                <li>
                <NavLink
                  to="/setting"
