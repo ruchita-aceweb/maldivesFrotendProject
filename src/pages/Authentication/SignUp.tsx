@@ -5,7 +5,7 @@ import Logo from '../../images/logo/logo.svg';
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../../../src/Sass.scss'
+
 
 
 const SignUp = () => {
@@ -154,8 +154,6 @@ const SignUp = () => {
   return (
 
     <>
-    <div className="signupmain">
-    <div className="mainwrap">
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="wrap">
       <div className="flex flex-wrap items-center">
@@ -497,9 +495,7 @@ const SignUp = () => {
        
         <ToastContainer />
       </div>
-      </div>  
-    </div>  
-    </>
+     </>
   );
 };
 
