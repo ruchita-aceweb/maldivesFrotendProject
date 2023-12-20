@@ -1,12 +1,16 @@
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect, ChangeEvent ,useRef } from "react";
 import axios from "axios";
+
+
 const ViewMore = () => {
     const { id } = useParams<{ id: string }>();
+    const ws = useRef<WebSocket | null>(null);
     const navigate = useNavigate();
     const apiUrl = 'http://localhost:3005/';
+    
     const requestConfig = {
         headers: {
             'token': localStorage.getItem('token'),
@@ -14,6 +18,8 @@ const ViewMore = () => {
 
         }
     }
+    const socketRef = useRef<WebSocket | null>(null);
+    const socket = new WebSocket('ws://localhost:3006');
     const initialFValues = {
         id: 0,
         service_type: "",
@@ -35,15 +41,9 @@ const ViewMore = () => {
 
 
     }
-    // interface DocObject {
-    //     key: string;
-    //     name:string
-    // }
-
-    // Inside your component or function
-    //  const setNowDoc: DocObject[] = [];
-
+    
     const [doc_status, setDpcStatus] = useState('');
+    const [message, setMessage] = useState<string>('');
 
     const [values, setValues] = useState(initialFValues);
     const [service, setService] = useState<any[]>([])
@@ -89,7 +89,35 @@ const ViewMore = () => {
 
 
     }
+    useEffect(() => {
+        const handleOpen = (event: Event) => {
+          console.log("Connected");
+        };
+    
+        const handleMessage = (event: MessageEvent) => {
+          console.log((JSON.parse(event.data)).reverse());
+          setComments((JSON.parse(event.data)).reverse())
+          
+        };
+    
+        socket.addEventListener('open', handleOpen);
+        socket.addEventListener('message', handleMessage);
+    
+        return () => {
+          socket.removeEventListener('open', handleOpen);
+          socket.removeEventListener('message', handleMessage);
+        };
+      }, [socket]);
+    
+      const sendMessage = () => {
+        socket.send(JSON.stringify(id));
+      };
 
+    // const sendMessage = () => {
+    //     if (socketRef.current) {
+    //       socketRef.current.send('Hello world 1');
+    //     }
+    //   };
     const sendReview = async (event: React.FormEvent) => {
 
         event.preventDefault();
@@ -109,6 +137,7 @@ const ViewMore = () => {
                 setComment('')
                 getService()
                 getComments()
+                sendMessage()
 
             }).catch(error => {
                 toast.error(error.response.data.error, { theme: 'colored' })
@@ -181,6 +210,7 @@ const ViewMore = () => {
                 setDpcStatus(doc_status)
                 getService()
                 getComments()
+                sendMessage()
 
             }).catch(error => {
                 toast.error(error.response.data.error, { theme: 'colored' })
@@ -221,6 +251,83 @@ const ViewMore = () => {
         getComments()
 
     }, [])
+
+    
+   
+
+    useEffect(() => {
+      
+        socket.addEventListener('open', function (event) {
+          console.log('Connected');
+        });
+    
+        socket.addEventListener('message', function (event) {
+          console.log(JSON.parse(event.data));
+          setComments((JSON.parse(event.data)).reverse())
+        });
+    
+        return () => {
+          socket.close();
+        };
+      }, []); 
+
+
+    // useEffect(() => {
+    //     // Create the WebSocket connection
+    //     socketRef.current = new WebSocket('ws://localhost:3006');
+    
+    //     // Function to send headers as the first message
+    //     // const sendHeaders = () => {
+    //     //     if (socketRef.current) {
+    //     //       const headers = {
+    //     //         token: localStorage.getItem('token'),
+    //     //         uu_id: localStorage.getItem('uuID'),
+    //     //         param_id: id,
+    //     //       };
+    //     //       socketRef.current.send(JSON.stringify(headers));
+    //     //     }
+    //     //   };
+    //     const sendHeaders = () => {
+    //         if (socketRef.current) {
+    //           const headers = {
+    //             token: localStorage.getItem('token'),
+    //             uu_id: localStorage.getItem('uuID'),
+    //             param_id: id,
+    //           };
+    //           const jsonMessage = JSON.stringify(headers);
+    //           socketRef.current.send(jsonMessage);
+    //         }
+    //       };
+    
+    //     // Event handler for when the connection is open
+    //     const handleOpen = (event: Event) => {
+    //       console.log('Connected');
+    //       sendHeaders(); // Send headers once the connection is open
+          
+    //     };
+    
+    //     // Event handler for incoming messages
+    //     const handleMessage = (event: MessageEvent) => {
+    //       console.log('Message', (JSON.parse(event.data)).reverse());
+    //       setComments((JSON.parse(event.data)).reverse())
+    //     };
+    
+    //     // Add event listeners
+    //     if (socketRef.current) {
+    //       socketRef.current.addEventListener('open', handleOpen);
+    //       socketRef.current.addEventListener('message', handleMessage);
+    //     }
+    
+    //     // Cleanup by removing event listeners when the component unmounts
+    //     return () => {
+    //       if (socketRef.current) {
+    //         socketRef.current.removeEventListener('open', handleOpen);
+    //         socketRef.current.removeEventListener('message', handleMessage);
+    //       }
+    //     };
+    //   }, []); // No dependencies, so it runs once on mount
+    
+     
     return (
         <>
             {!permission_service && <h2>No Access For You.!</h2>}
