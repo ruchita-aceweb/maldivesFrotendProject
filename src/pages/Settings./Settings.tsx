@@ -90,8 +90,8 @@ const Settings = () => {
      
         await axios.get(`${apiUrl}user/view/logo`, requestConfig).then(response => {
            //http://localhost:3005/pdf/file-logo.png
-              setImage_name(`${apiUrl}/pdf/${response.data.location.value}`)
-             // image_name:`${apiUrl}/${response.data.location.image_url}`
+              //setImage_name(`${apiUrl}/pdf/${response.data.location.value}`)
+              setImage_name(`${response.data.location.value}`)
         
         }).catch(error => {
           toast.error(error.response.data.error, { theme: 'colored' })

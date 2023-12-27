@@ -23,6 +23,7 @@ const [values, setValues] = useState(initialFValues);
 const [imag_urls, setImgUrls] = useState(initialImagesUrl);
 const [service_type, setServiceType] = useState('');
 const [permission, setPermission] = useState(false);
+const [road_worthiness, setRoadWorthiness] = useState<boolean>(false);
   const [show, setShow] = useState(false);
   const [imag_1, setImag_1] = useState(false);
   const [imag_2, setImag_2] = useState(false);
@@ -183,6 +184,12 @@ const [permission, setPermission] = useState(false);
            }
           }
           
+          if(response.data.user_permissions[i].Name=="road_worthiness"){
+            setRoadWorthiness(response.data.user_permissions[i].Value)
+           if(!response.data.user_permissions[i].Value){
+            setRoadWorthiness(false)
+           }
+          }
          
 
       }
@@ -224,24 +231,47 @@ const [permission, setPermission] = useState(false);
           <h6 className="font-medium text-black dark:text-white">
             Details
           </h6>
-          <div>
-            <label className="mb-3 block text-black dark:text-white">
-              Service Type
-            </label>
-            <select
-              id="gender" 
-              name="service_type" value={service_type} onChange={handleSelectChange}
-              placeholder="fgf"
-              className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-            >
-              <option value="" selected>Select a service</option>
-              <option value="Marine Vehicle Registry">Marine Vehicle Registry</option>
-              <option value="Road Worthiness">Road Worthiness</option>
-              <option value="Hull Number">Hull Number</option>
-              <option value="Land Vehicle Registry">Land Vehicle Registry</option>
-            </select>
 
-          </div>
+          {road_worthiness &&
+           <div>
+           <label className="mb-3 block text-black dark:text-white">
+             Service Type
+           </label>
+           <select
+             id="gender" 
+             name="service_type" value={service_type} onChange={handleSelectChange}
+             className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+           >
+             <option value="" selected>Select a service</option>
+             <option value="Marine Vehicle Registry">Marine Vehicle Registry</option>
+             <option value="Road Worthiness">Road Worthiness</option>
+             <option value="Hull Number">Hull Number</option>
+             <option value="Land Vehicle Registry">Land Vehicle Registry</option>
+           </select>
+
+         </div>
+      }
+
+{!road_worthiness &&
+           <div>
+           <label className="mb-3 block text-black dark:text-white">
+             Service Type
+           </label>
+           <select
+             id="gender" 
+             name="service_type" value={service_type} onChange={handleSelectChange}
+             className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+           >
+             <option value="" selected>Select a service</option>
+             <option value="Marine Vehicle Registry">Marine Vehicle Registry</option>
+             {/* <option value="Road Worthiness">Road Worthiness</option> */}
+             <option value="Hull Number">Hull Number</option>
+             <option value="Land Vehicle Registry">Land Vehicle Registry</option>
+           </select>
+
+         </div>
+      }
+          
 
          
           <div>
@@ -320,8 +350,8 @@ const [permission, setPermission] = useState(false);
       {selectedFilesNewOwner &&
         <h1>{selectedFilesNewOwner.name}</h1>
       }
-      
      
+      
      
        <input
          type="file"
