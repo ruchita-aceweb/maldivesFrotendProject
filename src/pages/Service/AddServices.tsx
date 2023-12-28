@@ -20,6 +20,8 @@ const initialFValues = {
 }
 
 const [values, setValues] = useState(initialFValues); 
+const [loading, setLoading] = useState(false);
+
 const [imag_urls, setImgUrls] = useState(initialImagesUrl);
 const [service_type, setServiceType] = useState('');
 const [permission, setPermission] = useState(false);
@@ -36,7 +38,14 @@ const [road_worthiness, setRoadWorthiness] = useState<boolean>(false);
 
     }
   }
-  
+  const spinnerStyle = {
+    border: '4px solid rgba(255, 255, 255, 0.3)',
+    borderRadius: '50%',
+    borderTop: '4px solid #ffffff',
+    width: '20px',
+    height: '20px',
+    animation: 'spin 1s linear infinite',
+};
   const [selectedFilesNewOwner, setSelectedFileNewOwner] = useState<File | null>(null); 
   const [selectedFilesCurrentOwner, setSelectedFileCurrentOwner] = useState<File | null>(null);
   const [selectedFilesRegistry, setSelectedFileNewRegistry] = useState<File | null>(null);
@@ -99,66 +108,118 @@ const [road_worthiness, setRoadWorthiness] = useState<boolean>(false);
 
 
   }
+  // const handleEditSubmit = async (event: React.FormEvent) => {
+  //   event.preventDefault();
+
+  //   if (!selectedFilesNewOwner || !selectedFilesRegistry || !selectedFilesCurrentOwner) {
+  //         toast.error("Please uploaded the documents", { theme: 'colored' })
+  //     return;
+  //   }
+  //   else if (service_type == "") {
+  //     toast.error("Please select the service type", { theme: 'colored' })
+  //   }
+  //   else if (values.vehicle_type == "") {
+  //     toast.error("Please select the vehicle type", { theme: 'colored' })
+  //   }
+  //   else if (values.vehicle_number == "") {
+  //     toast.error("Please select the vehicle number", { theme: 'colored' })
+  //   }
+  //   else if (values.model == "") {
+  //     toast.error("Please select the service type", { theme: 'colored' })
+  //   }
+  //   else if (values.engine_serial_no == "") {
+  //     toast.error("Please select the vehicle model", { theme: 'colored' })
+  //   }
+  //   else{
+  //     toast.success("Processing...", { theme: 'colored' })
+  //     var data =[{
+  //       vehicle_type:values.vehicle_type,
+  //       vehicle_number:values.vehicle_number,
+  //       model:values.model,
+  //       engine_serial_no:values.engine_serial_no,
+  //     }]
+  //     const formData = new FormData();
+  //   formData.append('type', String('vehicle_registry_copy'));
+  //   formData.append('uu_id', String(requestConfig.headers.uu_id));
+  //   formData.append('file_1',selectedFilesNewOwner);  
+  //   formData.append('file_2',selectedFilesRegistry); 
+  //   formData.append('file_3', selectedFilesCurrentOwner);
+  //   formData.append('service_type',service_type);  
+  //   formData.append('data',JSON.stringify(data));  
+  // //  formData.append('vehicle_type',values.vehicle_type);
+  //  // formData.append('vehicle_number', values.vehicle_number);
+  //  // formData.append('model',values.model);
+  // //  formData.append('engine_serial_no', values.engine_serial_no);
+ 
+
+  //   await axios.post(`${apiUrl}user/images/upload`, formData, requestConfig).then(response => {
+  //     toast.success("New Service Request Added", { theme: 'colored' })
+  //     setValues(initialFValues)
+  //     setSelectedFileNewOwner(null) 
+  //      setSelectedFileCurrentOwner(null)
+  //       setSelectedFileNewRegistry(null)
+  //     setShow(false)
+  //   }).catch(error => {
+  //     toast.error(error.response.data.error, { theme: 'colored' })
+  //   })
+
+  // }
+    
+
+  
+  // }
   const handleEditSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!selectedFilesNewOwner || !selectedFilesRegistry || !selectedFilesCurrentOwner) {
-          toast.error("Please uploaded the documents", { theme: 'colored' })
+      toast.error("Please upload the documents", { theme: 'colored' });
       return;
-    }
-    else if (service_type == "") {
-      toast.error("Please select the service type", { theme: 'colored' })
-    }
-    else if (values.vehicle_type == "") {
-      toast.error("Please select the vehicle type", { theme: 'colored' })
-    }
-    else if (values.vehicle_number == "") {
-      toast.error("Please select the vehicle number", { theme: 'colored' })
-    }
-    else if (values.model == "") {
-      toast.error("Please select the service type", { theme: 'colored' })
-    }
-    else if (values.engine_serial_no == "") {
-      toast.error("Please select the vehicle model", { theme: 'colored' })
-    }
-    else{
-      toast.success("Processing...", { theme: 'colored' })
-      var data =[{
-        vehicle_type:values.vehicle_type,
-        vehicle_number:values.vehicle_number,
-        model:values.model,
-        engine_serial_no:values.engine_serial_no,
-      }]
+    } else if (service_type === "") {
+      toast.error("Please select the service type", { theme: 'colored' });
+    } else if (values.vehicle_type === "") {
+      toast.error("Please select the vehicle type", { theme: 'colored' });
+    } else if (values.vehicle_number === "") {
+      toast.error("Please select the vehicle number", { theme: 'colored' });
+    } else if (values.model === "") {
+      toast.error("Please select the model", { theme: 'colored' });
+    } else if (values.engine_serial_no === "") {
+      toast.error("Please select the engine serial number", { theme: 'colored' });
+    } else {
+      setLoading(true);
+     // toast.success("Processing...", { theme: 'colored' });
+
+      var data = [{
+        vehicle_type: values.vehicle_type,
+        vehicle_number: values.vehicle_number,
+        model: values.model,
+        engine_serial_no: values.engine_serial_no,
+      }];
+
       const formData = new FormData();
-    formData.append('type', String('vehicle_registry_copy'));
-    formData.append('uu_id', String(requestConfig.headers.uu_id));
-    formData.append('file_1',selectedFilesNewOwner);  
-    formData.append('file_2',selectedFilesRegistry); 
-    formData.append('file_3', selectedFilesCurrentOwner);
-    formData.append('service_type',service_type);  
-    formData.append('data',JSON.stringify(data));  
-  //  formData.append('vehicle_type',values.vehicle_type);
-   // formData.append('vehicle_number', values.vehicle_number);
-   // formData.append('model',values.model);
-  //  formData.append('engine_serial_no', values.engine_serial_no);
- 
+      formData.append('type', String('vehicle_registry_copy'));
+      formData.append('uu_id', String(requestConfig.headers.uu_id));
+      formData.append('file_1', selectedFilesNewOwner);
+      formData.append('file_2', selectedFilesRegistry);
+      formData.append('file_3', selectedFilesCurrentOwner);
+      formData.append('service_type', service_type);
+      formData.append('data', JSON.stringify(data));
 
-    await axios.post(`${apiUrl}user/images/upload`, formData, requestConfig).then(response => {
-      toast.success("New Service Request Added", { theme: 'colored' })
-      setValues(initialFValues)
-      setSelectedFileNewOwner(null) 
-       setSelectedFileCurrentOwner(null)
-        setSelectedFileNewRegistry(null)
-      setShow(false)
-    }).catch(error => {
-      toast.error(error.response.data.error, { theme: 'colored' })
-    })
+      try {
+        await axios.post(`${apiUrl}user/images/upload`, formData, requestConfig);
+        toast.success("New Service Request Added", { theme: 'colored' });
+        setValues(initialFValues);
+        setSelectedFileNewOwner(null);
+        setSelectedFileCurrentOwner(null);
+        setSelectedFileNewRegistry(null);
+        setShow(false);
+      } catch (error) {
+        console.log("Error")
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
-  }
-    
-
-  
-  }
   const clearData  = async (event: React.FormEvent) =>{
     event.preventDefault();
     setValues(initialFValues)
@@ -518,9 +579,45 @@ const [road_worthiness, setRoadWorthiness] = useState<boolean>(false);
 
      {show && 
        <div>
-       <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-white mb-4" onClick={handleEditSubmit}>
+       {/* <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-white mb-4" onClick={handleEditSubmit}>
          SUBMIT
-       </button>
+       </button> */}
+        <button
+                                       className={`flex w-full mb-3 justify-center rounded p-3 font-medium text-white ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-black'}`}
+                                     
+                                        style={{
+                                            flex: '1',
+                                            marginBottom: '3px',
+                                            justifyContent: 'center',
+                                            borderRadius: '8px',
+                                            padding: '12px',
+                                            fontWeight: 'medium',
+                                            color: 'white',
+                                            backgroundColor: loading ? '#808080' : 'black',
+                                            cursor: loading ? 'not-allowed' : 'pointer',
+                                        }}
+                                        onClick={handleEditSubmit}
+                                        disabled={loading}
+                                    >
+                                        {loading ? <div style={spinnerStyle} /> : 'SUBMIT'}
+                                    </button>
+        {/* <button
+        className="flex w-full justify-center rounded bg-primary p-3 font-medium text-white mb-4"
+        style={{
+          flex: '1',
+          justifyContent: 'center',
+          borderRadius: '8px',
+          padding: '12px',
+          fontWeight: 'medium',
+          color: 'white',
+          backgroundColor: loading ? '#808080' : 'blue',  // Adjust colors as needed
+          cursor: loading ? 'not-allowed' : 'pointer',
+        }}
+        onClick={handleEditSubmit}
+        disabled={loading}
+      >
+        {loading ? 'SUBMITTING...' : 'SUBMIT'}
+      </button> */}
  
        <button className="flex w-full justify-center rounded bg-secondary p-3 font-medium text-white mb-4" onClick={clearData}  >
          Clear

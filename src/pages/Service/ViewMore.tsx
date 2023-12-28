@@ -1,7 +1,7 @@
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useState, useEffect, ChangeEvent ,useRef } from "react";
+import { useState, useEffect, ChangeEvent, useRef } from "react";
 import axios from "axios";
 
 
@@ -10,7 +10,7 @@ const ViewMore = () => {
     const ws = useRef<WebSocket | null>(null);
     const navigate = useNavigate();
     const apiUrl = 'http://localhost:3005/';
-    
+
     const requestConfig = {
         headers: {
             'token': localStorage.getItem('token'),
@@ -41,7 +41,7 @@ const ViewMore = () => {
 
 
     }
-    
+
     const [doc_status, setDpcStatus] = useState('');
     const [message, setMessage] = useState<string>('');
 
@@ -52,7 +52,16 @@ const ViewMore = () => {
     const [comment, setComment] = useState('');
     const [permission, setPermission] = useState(false);
     const [permission_service, setPermission_service] = useState(false);
-
+    const [loading, setLoading] = useState(false);
+    const [loadingApprove, setLoadingApprove] = useState(false);
+    const spinnerStyle = {
+        border: '4px solid rgba(255, 255, 255, 0.3)',
+        borderRadius: '50%',
+        borderTop: '4px solid #ffffff',
+        width: '20px',
+        height: '20px',
+        animation: 'spin 1s linear infinite',
+    };
     const [selectedFiles, setSelectedFile] = useState<File | null>(null);
     const getService = async () => {
         await axios.get(`${apiUrl}admin/view/more/${id}`, requestConfig).then(response => {
@@ -91,63 +100,90 @@ const ViewMore = () => {
     }
     useEffect(() => {
         const handleOpen = (event: Event) => {
-          console.log("Connected");
+            console.log("Connected");
         };
-    
+
         const handleMessage = (event: MessageEvent) => {
-          console.log((JSON.parse(event.data)).reverse());
-          setComments((JSON.parse(event.data)).reverse())
-          
+            console.log((JSON.parse(event.data)).reverse());
+            setComments((JSON.parse(event.data)).reverse())
+
         };
-    
+
         socket.addEventListener('open', handleOpen);
         socket.addEventListener('message', handleMessage);
-    
+
         return () => {
-          socket.removeEventListener('open', handleOpen);
-          socket.removeEventListener('message', handleMessage);
+            socket.removeEventListener('open', handleOpen);
+            socket.removeEventListener('message', handleMessage);
         };
-      }, [socket]);
-    
-      const sendMessage = () => {
+    }, [socket]);
+
+    const sendMessage = () => {
         socket.send(JSON.stringify(id));
-      };
+    };
 
-    // const sendMessage = () => {
-    //     if (socketRef.current) {
-    //       socketRef.current.send('Hello world 1');
+
+    // const sendReview = async (event: React.FormEvent) => {
+
+    //     event.preventDefault();
+    //     if (comment == "") {
+    //         toast.error("Please comment", { theme: 'colored' })
     //     }
-    //   };
-    const sendReview = async (event: React.FormEvent) => {
+    //     else {
+    //         toast.success("processing...", { theme: 'colored' })
+    //         const requestBody = {
+    //             "service_request_id": id,
+    //             "comment": comment,
+    //             "Content-Type": 'application/json'
+    //         }
 
+    //         await axios.post(`${apiUrl}admin/send/review`, requestBody, requestConfig).then(response => {
+    //             toast.success("Send Successfully Review", { theme: 'colored' })
+    //             setComment('')
+    //             getService()
+    //             getComments()
+    //             sendMessage()
+
+    //         }).catch(error => {
+    //             toast.error(error.response.data.error, { theme: 'colored' })
+    //         })
+    //     }
+
+
+
+
+    // }
+
+    const sendReview = async (event: React.FormEvent) => {
         event.preventDefault();
-        if (comment == "") {
-            toast.error("Please comment", { theme: 'colored' })
-        }
-        else {
-            toast.success("processing...", { theme: 'colored' })
+
+        if (comment === "") {
+            toast.error("Please comment", { theme: 'colored' });
+        } else {
+            setLoading(true);
+
             const requestBody = {
                 "service_request_id": id,
                 "comment": comment,
                 "Content-Type": 'application/json'
+            };
+
+            try {
+                await axios.post(`${apiUrl}admin/send/review`, requestBody, requestConfig);
+
+                toast.success("Send Successfully Review", { theme: 'colored' });
+                setComment('');
+                getService();
+                getComments();
+                sendMessage();
+            } catch (error) {
+                //toast.error(error.response.data.error, { theme: 'colored' });
+                console.log("err")
+            } finally {
+                setLoading(false);
             }
-
-            await axios.post(`${apiUrl}admin/send/review`, requestBody, requestConfig).then(response => {
-                toast.success("Send Successfully Review", { theme: 'colored' })
-                setComment('')
-                getService()
-                getComments()
-                sendMessage()
-
-            }).catch(error => {
-                toast.error(error.response.data.error, { theme: 'colored' })
-            })
         }
-
-
-
-
-    }
+    };
     const getUserPermissions = async () => {
         await axios.get(`${apiUrl}user/permissions`, requestConfig).then(response => {
             for (let i = 0; i < response.data.user_permissions.length; i++) {
@@ -162,8 +198,8 @@ const ViewMore = () => {
                     }
                 }
                 if (response.data.user_permissions[i].Name == "service") {
-                   // setPermission(response.data.user_permissions[i].Value)
-                   setPermission_service(response.data.user_permissions[i].Value)
+                    // setPermission(response.data.user_permissions[i].Value)
+                    setPermission_service(response.data.user_permissions[i].Value)
                     if (!response.data.user_permissions[i].Value) {
                         //setPermission(false)
                         setPermission_service(false)
@@ -193,30 +229,60 @@ const ViewMore = () => {
         navigate(`/update/service/${id}`)
 
     };
+    // const approveStatus = async (event: React.FormEvent) => {
+    //     event.preventDefault();
+    //     if (doc_status == "") {
+    //         toast.error("Please check status", { theme: 'colored' })
+    //     } else {
+    //         toast.success("Processing...", { theme: 'colored' })
+    //         const requestBody = {
+    //             "service_request_id": id,
+    //             "status": doc_status,
+    //             "Content-Type": 'application/json'
+    //         }
+
+    //         await axios.post(`${apiUrl}admin/approve/documents`, requestBody, requestConfig).then(response => {
+    //             toast.success("Status updated.!", { theme: 'colored' })
+    //             setDpcStatus(doc_status)
+    //             getService()
+    //             getComments()
+    //             sendMessage()
+
+    //         }).catch(error => {
+    //             toast.error(error.response.data.error, { theme: 'colored' })
+    //         })
+    //     }
+    // }
     const approveStatus = async (event: React.FormEvent) => {
         event.preventDefault();
-        if (doc_status == "") {
-            toast.error("Please check status", { theme: 'colored' })
+
+        if (doc_status === "") {
+            toast.error("Please check status", { theme: 'colored' });
         } else {
-            toast.success("Processing...", { theme: 'colored' })
+            setLoadingApprove(true);
+
             const requestBody = {
                 "service_request_id": id,
                 "status": doc_status,
                 "Content-Type": 'application/json'
+            };
+
+            try {
+                await axios.post(`${apiUrl}admin/approve/documents`, requestBody, requestConfig);
+
+                toast.success("Status updated!", { theme: 'colored' });
+                setDpcStatus(doc_status);
+                getService();
+                getComments();
+                sendMessage();
+            } catch (error) {
+                //toast.error(error.response.data.error, { theme: 'colored' });
+                console.log("err")
+            } finally {
+                setLoadingApprove(false);
             }
-
-            await axios.post(`${apiUrl}admin/approve/documents`, requestBody, requestConfig).then(response => {
-                toast.success("Status updated.!", { theme: 'colored' })
-                setDpcStatus(doc_status)
-                getService()
-                getComments()
-                sendMessage()
-
-            }).catch(error => {
-                toast.error(error.response.data.error, { theme: 'colored' })
-            })
         }
-    }
+    };
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
 
         // formData.append('service_id', String(id));
@@ -252,30 +318,30 @@ const ViewMore = () => {
 
     }, [])
 
-    
-   
+
+
 
     useEffect(() => {
-      
+
         socket.addEventListener('open', function (event) {
-          console.log('Connected');
+            console.log('Connected');
         });
-    
+
         socket.addEventListener('message', function (event) {
-          console.log(JSON.parse(event.data));
-          setComments((JSON.parse(event.data)).reverse())
+            console.log(JSON.parse(event.data));
+            setComments((JSON.parse(event.data)).reverse())
         });
-    
+
         return () => {
-          socket.close();
+            socket.close();
         };
-      }, []); 
+    }, []);
 
 
     // useEffect(() => {
     //     // Create the WebSocket connection
     //     socketRef.current = new WebSocket('ws://localhost:3006');
-    
+
     //     // Function to send headers as the first message
     //     // const sendHeaders = () => {
     //     //     if (socketRef.current) {
@@ -298,26 +364,26 @@ const ViewMore = () => {
     //           socketRef.current.send(jsonMessage);
     //         }
     //       };
-    
+
     //     // Event handler for when the connection is open
     //     const handleOpen = (event: Event) => {
     //       console.log('Connected');
     //       sendHeaders(); // Send headers once the connection is open
-          
+
     //     };
-    
+
     //     // Event handler for incoming messages
     //     const handleMessage = (event: MessageEvent) => {
     //       console.log('Message', (JSON.parse(event.data)).reverse());
     //       setComments((JSON.parse(event.data)).reverse())
     //     };
-    
+
     //     // Add event listeners
     //     if (socketRef.current) {
     //       socketRef.current.addEventListener('open', handleOpen);
     //       socketRef.current.addEventListener('message', handleMessage);
     //     }
-    
+
     //     // Cleanup by removing event listeners when the component unmounts
     //     return () => {
     //       if (socketRef.current) {
@@ -326,8 +392,8 @@ const ViewMore = () => {
     //       }
     //     };
     //   }, []); // No dependencies, so it runs once on mount
-    
-     
+
+
     return (
         <>
             {!permission_service && <h2>No Access For You.!</h2>}
@@ -541,18 +607,70 @@ const ViewMore = () => {
                                     />
 
 
-                                    <button className="flex w-full mb-3 justify-center rounded bg-black p-3 font-medium text-white mb-4" onClick={sendReview}>
+                                    {/* <button className="flex w-full mb-3 justify-center rounded bg-black p-3 font-medium text-white mb-4" onClick={sendReview}>
                                         SEND FOR REVIEW
+                                    </button> */}
+
+                                    {/* <button
+                                        className={`flex w-full mb-3 justify-center rounded p-3 font-medium text-white ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-black'}`}
+                                        onClick={sendReview}
+                                        disabled={loading}
+                                    >
+                                        {loading ? 'SENDING...' : 'SEND FOR REVIEW'}
                                     </button>
 
 
 
                                     <h5 className="mb-2  font-semibold text-black dark:text-white">
                                         Approve Request
-                                    </h5>
+                                    </h5> */}
 
-                                    <button className="flex w-full justify-center rounded bg-black p-3 font-medium text-white mb-4" onClick={approveStatus}>
+                                    <button
+                                       className={`flex w-full mb-3 justify-center rounded p-3 font-medium text-white ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-black'}`}
+                                     
+                                        style={{
+                                            flex: '1',
+                                            marginBottom: '3px',
+                                            justifyContent: 'center',
+                                            borderRadius: '8px',
+                                            padding: '12px',
+                                            fontWeight: 'medium',
+                                            color: 'white',
+                                            backgroundColor: loading ? '#808080' : 'black',
+                                            cursor: loading ? 'not-allowed' : 'pointer',
+                                        }}
+                                        onClick={sendReview}
+                                        disabled={loading}
+                                    >
+                                        {loading ? <div style={spinnerStyle} /> : 'SEND FOR REVIEW'}
+                                    </button>
+
+                                    {/* <button className="flex w-full justify-center rounded bg-black p-3 font-medium text-white mb-4" onClick={approveStatus}>
                                         Approve
+                                    </button> */}
+                                    {/* <button
+                                        className={`flex w-full justify-center rounded p-3 font-medium text-white ${loadingApprove ? 'bg-gray-500 cursor-not-allowed' : 'bg-black'}`}
+                                        onClick={approveStatus}
+                                        disabled={loadingApprove}
+                                    >
+                                        {loadingApprove ? 'APPROVING...' : 'APPROVE'}
+                                    </button> */}
+                                    <button
+                                        className={`flex w-full justify-center rounded p-3 font-medium text-white ${loadingApprove ? 'bg-gray-500 cursor-not-allowed' : 'bg-black'}`}
+                                        style={{
+                                            flex: '1',
+                                            justifyContent: 'center',
+                                            borderRadius: '8px',
+                                            padding: '12px',
+                                            fontWeight: 'medium',
+                                            color: 'white',
+                                            backgroundColor: loadingApprove ? '#808080' : 'black',
+                                            cursor: loadingApprove ? 'not-allowed' : 'pointer',
+                                        }}
+                                        onClick={approveStatus}
+                                        disabled={loadingApprove}
+                                    >
+                                        {loadingApprove ? <div style={spinnerStyle} /> : 'APPROVE'}
                                     </button>
 
                                     <h5 className="mb-2  font-semibold text-black dark:text-white">
