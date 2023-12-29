@@ -30,12 +30,18 @@ const Settings = () => {
         value: string;
         label: string;
         placeholder: string;
-       // setValue: (value: string) => void; // Assuming setValue is a function taking a string parameter
     }
- //
+ 
  const initialFValuesImage = {
     image_name:''
   }
+
+  const settingArray=[
+    {"key": "abc", "label": "abc","placeholder": "abc"},
+    {"key": "def", "label": "def","placeholder": "def"},
+    
+    
+  ]
   const [values_image, setValuesImage] = useState(initialFValuesImage);
   const [image_name, setImage_name] = useState('');
     const [text, setText] = useState<TextItem[]>([]);
@@ -51,13 +57,12 @@ const Settings = () => {
        
     };
     const handleSubmit = async () => {
-         const requestBody = {
-                "key": "test123456",
-                "value":"HASH NEW2",
-                "label": "TEST 123452",
-                "placeholder": "TEST 123452",
-                "Content-Type": 'application/json'
-            }
+
+          const requestBody = {
+              data: settingArray,
+             
+              
+          }
 
             await axios.post(`${apiUrl}user/settings`, requestBody, requestConfig).then(response => {
                 getSettings();
