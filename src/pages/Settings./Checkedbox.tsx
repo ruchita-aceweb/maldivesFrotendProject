@@ -15,7 +15,7 @@ const Checkedbox: React.FC<TextFieldProps> = (props) => {
 
   return (
     <div>
-      <label className="mb-3 block text-black dark:text-white">{label}</label>
+      <label className="mb-3 block text-black dark:text-white">{placeholder}</label>
       <div className="relative p-6 flex-auto">
 
   <div className="mb-[0.125rem] block min-h-[1.5rem] pl-[1.5rem]">
@@ -34,7 +34,7 @@ const Checkedbox: React.FC<TextFieldProps> = (props) => {
           <label
             className="inline-block pl-[0.15rem] hover:cursor-pointer"
             htmlFor="checkboxChecked">
-            Road Worthiness
+           {label}
           </label>
         </div>
 

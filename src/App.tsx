@@ -16,7 +16,11 @@ import ServiceRequests from './pages/Service/ServiceRequests';
 import ViewMore from './pages/Service//ViewMore';
 import UserList from './pages/admin/UserList';
 import MyProfile from './pages/Settings';
-import Loader from './common/Loader';
+import Rental from './pages/Rental/Rental';
+import Category from './pages/Rental/Category';
+import AddRental from './pages/Rental/AddRental';
+import AddCategory from './pages/Rental/AddCategory';
+import Loader from './common/Loader'; 
 import routes from './routes';
 
 import {AuthProvider } from './js/auth/auth';
@@ -71,7 +75,8 @@ function App() {
 
   useEffect(() => {
     verify()
-      // if( (token=== null) && (sign_up===null)){
+    
+      // if( (token=== null)){
       //    navigate('/auth/signin') 
          
       //  }
@@ -109,6 +114,10 @@ function App() {
           <Route path='/service-request' element={<RequireAuth><ServiceRequests/></RequireAuth>}></Route>
           <Route path='/service/edit/:id?' element={<RequireAuth><EditServices/></RequireAuth>}></Route>
           <Route path='/update/service/:id?' element={<RequireAuth><UpdateService/></RequireAuth>}></Route>
+          <Route path='/rental' element={<RequireAuth><Rental/></RequireAuth>}></Route>
+          <Route path='/category' element={<RequireAuth><Category/></RequireAuth>}></Route>
+          <Route path='/add/rental' element={<RequireAuth><AddRental/></RequireAuth>}></Route>
+          <Route path='/add/category' element={<RequireAuth><AddCategory/></RequireAuth>}></Route>
           
           {routes.map((routes, index) => {
             const { path, component: Component } = routes;

@@ -52,7 +52,7 @@ const Settings = () => {
     { "key": "abc2", "label": "abc2", "placeholder": "ab2c", "type": "text" }, //text
     { "key": "logo", "label": "logo label", "placeholder": "logo", "type": "file" },//file
     { "key": "logo2", "label": "logo label2", "placeholder": "logo2", "type": "file" },//file
-    { "key": "logo3", "label": "logo label3", "placeholder": "logo3", "type": "file" },//file
+    { "key": "logo45", "label": "logo label3", "placeholder": "logo3", "type": "checkbox" },//file
 
 
   ]
@@ -187,6 +187,10 @@ const Settings = () => {
     }
   }
   useEffect(() => {
+    const token= localStorage.getItem('token');
+    if( (token=== null)){
+       navigate('/auth/signin') 
+    }
     getUserPermissions()
     getLogo()
 

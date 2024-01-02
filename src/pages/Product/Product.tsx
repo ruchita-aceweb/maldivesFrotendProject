@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useNavigate  } from 'react-router-dom';
 const TableOne = () => {
   const apiUrl = 'http://localhost:3005/';
   const requestConfig = {
@@ -12,6 +12,7 @@ const TableOne = () => {
 
     }
   }
+  
   const initialFValues = {
     id: 0,
     product_name: "",
@@ -24,6 +25,7 @@ const TableOne = () => {
     price: 0,
     created_at:""
   }
+  const navigate = useNavigate();
   const [permission, setPermission] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -275,6 +277,12 @@ const TableOne = () => {
   }
 
   useEffect(() => {
+   
+    const token= localStorage.getItem('token');
+    if( (token=== null)){
+       navigate('/auth/signin') 
+    }
+       
     getUserPermissions()
     getProduct();
 

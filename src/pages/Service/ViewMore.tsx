@@ -123,36 +123,7 @@ const ViewMore = () => {
     };
 
 
-    // const sendReview = async (event: React.FormEvent) => {
-
-    //     event.preventDefault();
-    //     if (comment == "") {
-    //         toast.error("Please comment", { theme: 'colored' })
-    //     }
-    //     else {
-    //         toast.success("processing...", { theme: 'colored' })
-    //         const requestBody = {
-    //             "service_request_id": id,
-    //             "comment": comment,
-    //             "Content-Type": 'application/json'
-    //         }
-
-    //         await axios.post(`${apiUrl}admin/send/review`, requestBody, requestConfig).then(response => {
-    //             toast.success("Send Successfully Review", { theme: 'colored' })
-    //             setComment('')
-    //             getService()
-    //             getComments()
-    //             sendMessage()
-
-    //         }).catch(error => {
-    //             toast.error(error.response.data.error, { theme: 'colored' })
-    //         })
-    //     }
-
-
-
-
-    // }
+    
 
     const sendReview = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -229,30 +200,7 @@ const ViewMore = () => {
         navigate(`/update/service/${id}`)
 
     };
-    // const approveStatus = async (event: React.FormEvent) => {
-    //     event.preventDefault();
-    //     if (doc_status == "") {
-    //         toast.error("Please check status", { theme: 'colored' })
-    //     } else {
-    //         toast.success("Processing...", { theme: 'colored' })
-    //         const requestBody = {
-    //             "service_request_id": id,
-    //             "status": doc_status,
-    //             "Content-Type": 'application/json'
-    //         }
-
-    //         await axios.post(`${apiUrl}admin/approve/documents`, requestBody, requestConfig).then(response => {
-    //             toast.success("Status updated.!", { theme: 'colored' })
-    //             setDpcStatus(doc_status)
-    //             getService()
-    //             getComments()
-    //             sendMessage()
-
-    //         }).catch(error => {
-    //             toast.error(error.response.data.error, { theme: 'colored' })
-    //         })
-    //     }
-    // }
+    
     const approveStatus = async (event: React.FormEvent) => {
         event.preventDefault();
 
@@ -284,12 +232,7 @@ const ViewMore = () => {
         }
     };
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-
-        // formData.append('service_id', String(id));
-        // formData.append('file',fileInput.files[0]); 
-        // formData.append('user_id', String(values.customer_id));  
-        // axios.post(`${apiUrl}user/admin/doc`, formData, requestConfig).then(response => {
-        if (e.target.files && e.target.files.length > 0) {
+     if (e.target.files && e.target.files.length > 0) {
             setSelectedFile(e.target.files[0])
             const formData = new FormData();
             formData.append('service_id', String(id));
@@ -312,6 +255,10 @@ const ViewMore = () => {
 
 
     useEffect(() => {
+        const token= localStorage.getItem('token');
+    if( (token=== null)){
+       navigate('/auth/signin') 
+    }
         getService()
         getUserPermissions()
         getComments()

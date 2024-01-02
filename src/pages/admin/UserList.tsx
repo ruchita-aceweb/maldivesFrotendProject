@@ -2,10 +2,13 @@ import { useState, useEffect } from "react";
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate  } from 'react-router-dom';
+
 
 
 const UserList = () => {
-    const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    const navigate = useNavigate();
+   const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     const initialFValues = {
         id: 0,
         first_name: "",
@@ -318,7 +321,10 @@ const UserList = () => {
 
       
     useEffect(() => {
-
+        const token= localStorage.getItem('token');
+        if( (token=== null)){
+           navigate('/auth/signin') 
+        }
         getUsers();
         getUserPermissions()
 

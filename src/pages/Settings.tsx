@@ -3,9 +3,12 @@ import React, { useEffect, ChangeEvent, useState } from "react";
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate  } from 'react-router-dom';
 
 
 const Settings = () => {
+  const navigate = useNavigate();
+
   const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
   const apiUrl = 'http://localhost:3005/';
   const requestConfig = {
@@ -220,6 +223,10 @@ const Settings = () => {
 
   }
   useEffect(() => {
+    const token= localStorage.getItem('token');
+    if( (token=== null)){
+       navigate('/auth/signin') 
+    }
     getUser();
 
 

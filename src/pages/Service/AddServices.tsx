@@ -4,7 +4,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 
+
+
 const AddServices = () => {
+ 
   const initialImagesUrl = {
     imag_1: "",
     imag_2: "",
@@ -108,66 +111,7 @@ const [road_worthiness, setRoadWorthiness] = useState<boolean>(false);
 
 
   }
-  // const handleEditSubmit = async (event: React.FormEvent) => {
-  //   event.preventDefault();
-
-  //   if (!selectedFilesNewOwner || !selectedFilesRegistry || !selectedFilesCurrentOwner) {
-  //         toast.error("Please uploaded the documents", { theme: 'colored' })
-  //     return;
-  //   }
-  //   else if (service_type == "") {
-  //     toast.error("Please select the service type", { theme: 'colored' })
-  //   }
-  //   else if (values.vehicle_type == "") {
-  //     toast.error("Please select the vehicle type", { theme: 'colored' })
-  //   }
-  //   else if (values.vehicle_number == "") {
-  //     toast.error("Please select the vehicle number", { theme: 'colored' })
-  //   }
-  //   else if (values.model == "") {
-  //     toast.error("Please select the service type", { theme: 'colored' })
-  //   }
-  //   else if (values.engine_serial_no == "") {
-  //     toast.error("Please select the vehicle model", { theme: 'colored' })
-  //   }
-  //   else{
-  //     toast.success("Processing...", { theme: 'colored' })
-  //     var data =[{
-  //       vehicle_type:values.vehicle_type,
-  //       vehicle_number:values.vehicle_number,
-  //       model:values.model,
-  //       engine_serial_no:values.engine_serial_no,
-  //     }]
-  //     const formData = new FormData();
-  //   formData.append('type', String('vehicle_registry_copy'));
-  //   formData.append('uu_id', String(requestConfig.headers.uu_id));
-  //   formData.append('file_1',selectedFilesNewOwner);  
-  //   formData.append('file_2',selectedFilesRegistry); 
-  //   formData.append('file_3', selectedFilesCurrentOwner);
-  //   formData.append('service_type',service_type);  
-  //   formData.append('data',JSON.stringify(data));  
-  // //  formData.append('vehicle_type',values.vehicle_type);
-  //  // formData.append('vehicle_number', values.vehicle_number);
-  //  // formData.append('model',values.model);
-  // //  formData.append('engine_serial_no', values.engine_serial_no);
- 
-
-  //   await axios.post(`${apiUrl}user/images/upload`, formData, requestConfig).then(response => {
-  //     toast.success("New Service Request Added", { theme: 'colored' })
-  //     setValues(initialFValues)
-  //     setSelectedFileNewOwner(null) 
-  //      setSelectedFileCurrentOwner(null)
-  //       setSelectedFileNewRegistry(null)
-  //     setShow(false)
-  //   }).catch(error => {
-  //     toast.error(error.response.data.error, { theme: 'colored' })
-  //   })
-
-  // }
-    
-
   
-  // }
   const handleEditSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -261,6 +205,10 @@ const [road_worthiness, setRoadWorthiness] = useState<boolean>(false);
 
   }
   useEffect(() => {
+    const token= localStorage.getItem('token');
+    if( (token=== null)){
+       navigate('/auth/signin') 
+    }
     getUserPermissions()
     getDocuments();
 

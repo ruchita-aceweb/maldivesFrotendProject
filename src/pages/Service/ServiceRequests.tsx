@@ -68,6 +68,10 @@ const ServiceRequests = () => {
 
     }
     useEffect(() => {
+        const token= localStorage.getItem('token');
+    if( (token=== null)){
+       navigate('/auth/signin') 
+    }
         getUserPermissions()
        // getRequests();
 
