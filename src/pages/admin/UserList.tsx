@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate  } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 
 const UserList = () => {
     const navigate = useNavigate();
-   const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     const initialFValues = {
         id: 0,
         first_name: "",
@@ -34,17 +34,18 @@ const UserList = () => {
         city: "",
         state: "",
         confirm_password: "",
-        id:0
+        id: 0
     }
     const [values_add_users, setValuesAddUsers] = useState(initialFValuesAddUser);
     const [gender, setGender] = useState('');
-   
+
     const [values, setValues] = useState(initialFValues);
     const [permission, setPermission] = useState<boolean>(false);
     const [product, setProduct] = useState<boolean>(false);
     const [edit_user, setEditUser] = useState<boolean>(false);
     const [profile, setProfile] = useState<boolean>(false);
     const [road_worthiness, setRoadWorthiness] = useState<boolean>(false);
+    const [rental_property, setRentalProperty] = useState<boolean>(false);
     const [service, setService] = useState<boolean>(false);
     const [settings, setSettings] = useState<boolean>(false);
     const [showAddModalAddUser, setShowAddModalAddUser] = useState<boolean>(false);
@@ -68,7 +69,7 @@ const UserList = () => {
             console.log(response.data.users)
             console.log((response.data.users).reverse())
             setUsersFilter((response.data.users).reverse())
-           setUsers((response.data.users).reverse())
+            setUsers((response.data.users).reverse())
         }).catch(error => {
             toast.error(error.response.data.error, { theme: 'colored' })
         })
@@ -93,7 +94,7 @@ const UserList = () => {
 
         setShowModal(true)
     }
-    const openModalEditUser = async (first_name: any, last_name: any, username: any, email: any, phone_number: any, address: any, city: any, state: any, gender: any, image_name: any, created_at: any,id:any) =>{
+    const openModalEditUser = async (first_name: any, last_name: any, username: any, email: any, phone_number: any, address: any, city: any, state: any, gender: any, image_name: any, created_at: any, id: any) => {
         setValuesAddUsers((prevValues) => ({
             ...prevValues,
             first_name: first_name,
@@ -107,7 +108,7 @@ const UserList = () => {
             gender: gender,
             image_name: image_name,
             created_at: created_at,
-            id:id
+            id: id
 
         }));
         setGender(gender)
@@ -127,6 +128,7 @@ const UserList = () => {
         setAdmin(false)
         setProfile(false)
         setRoadWorthiness(false)
+        setRentalProperty(false)
         await axios.get(`${apiUrl}admin/permissions/${id}`, requestConfig).then(response => {
             console.log(response.data.user_permissions);
             for (let i = 0; i < response.data.user_permissions.length; i++) {
@@ -145,25 +147,31 @@ const UserList = () => {
                 if (response.data.user_permissions[i].Name === "road_worthiness") {
                     setRoadWorthiness(response.data.user_permissions[i].Value)
                 }
+                if (response.data.user_permissions[i].Name === "rental_property") {
+                    setRentalProperty(response.data.user_permissions[i].Value)
+                }
             }
         }).catch(error => {
             toast.error(error.response.data.error, { theme: 'colored' });
         });
     };
     const handleSubmit = async (event: React.FormEvent) => {
+
         event.preventDefault();
         const requestBody = {
-            "user_id": values.id,
+            "user_user_id": values.id,
             "data": [
                 { "Name": "profile", "Value": profile },
                 { "Name": "admin", "Value": admin },
                 { "Name": "service", "Value": service },
                 { "Name": "settings", "Value": settings },
                 { "Name": "road_worthiness", "Value": road_worthiness },
+                { "Name": "rental_property", "Value": rental_property },
                 { "Name": "product", "Value": product }]
-                
+
         }
-        await axios.post(`${apiUrl}admin/add/user/roles`, requestBody).then(response => {
+        console.log(requestBody.data)
+        await axios.post(`${apiUrl}admin/add/user/roles`, requestBody, requestConfig).then(response => {
             toast.success("Permissions Added Successfully", { theme: 'colored' })
             setShowPermission(false);
         }).catch(error => {
@@ -223,7 +231,7 @@ const UserList = () => {
         else if (values_add_users.last_name == '') {
             toast.error("Please check your last name", { theme: 'colored' })
         }
-        
+
         else {
             const requestBody = {
                 "email": values_add_users.email,
@@ -259,71 +267,71 @@ const UserList = () => {
         event.preventDefault();
         console.log(values)
         console.log(gender)
-    
+
         if (!regex.test(values_add_users.email) || values_add_users.email == '') {
-          toast.error("Please check your email", { theme: 'colored' })
+            toast.error("Please check your email", { theme: 'colored' })
         } else if (values_add_users.first_name == '') {
-          toast.error("Please check your first name", { theme: 'colored' })
+            toast.error("Please check your first name", { theme: 'colored' })
         }
         else if (values_add_users.last_name == '') {
-          toast.error("Please check your last name", { theme: 'colored' })
+            toast.error("Please check your last name", { theme: 'colored' })
         }
         else if (values_add_users.phone_number == '') {
-          toast.error("Please check your  phone number", { theme: 'colored' })
+            toast.error("Please check your  phone number", { theme: 'colored' })
         }
-    
-    
+
+
         else if (values_add_users.username == '') {
-          toast.error("Please check your username", { theme: 'colored' })
+            toast.error("Please check your username", { theme: 'colored' })
         }
         else if (values_add_users.address == '') {
-          toast.error("Please check your address", { theme: 'colored' })
+            toast.error("Please check your address", { theme: 'colored' })
         }
         else if (values_add_users.city == '') {
-          toast.error("Please check your city", { theme: 'colored' })
+            toast.error("Please check your city", { theme: 'colored' })
         }
         else if (values_add_users.state == '') {
-          toast.error("Please check your state", { theme: 'colored' })
+            toast.error("Please check your state", { theme: 'colored' })
         }
         else if (gender == '') {
-          toast.error("Please check your gender", { theme: 'colored' })
+            toast.error("Please check your gender", { theme: 'colored' })
         }
-    
-       
-    
-        else {
-          const requestBody = {
-            "email": values_add_users.email,
-            "first_name": values_add_users.first_name,
-            "last_name": values_add_users.last_name,
-            "gender": gender,
-            "phone_number": values_add_users.phone_number,
-            "username": values_add_users.username,
-            "address": values_add_users.address,
-            "city": values_add_users.city,
-            "state": values_add_users.state,
-            "id": values_add_users.id
-          }
-          await axios.post(`${apiUrl}user/details/update`, requestBody, requestConfig).then(response => {
-            toast.success("User Details Updated", { theme: 'colored' })
-            getUsers();
-            setGender('')
-            setEditUser(false)
-            setShowAddModalAddUser(false)
-    
-    
-          }).catch(error => {
-            toast.error(error.response.data.error, { theme: 'colored' })
-          })
-    
-        }
-      }
 
-      
+
+
+        else {
+            const requestBody = {
+                "email": values_add_users.email,
+                "first_name": values_add_users.first_name,
+                "last_name": values_add_users.last_name,
+                "gender": gender,
+                "phone_number": values_add_users.phone_number,
+                "username": values_add_users.username,
+                "address": values_add_users.address,
+                "city": values_add_users.city,
+                "state": values_add_users.state,
+                "id": values_add_users.id
+            }
+            await axios.post(`${apiUrl}user/details/update`, requestBody, requestConfig).then(response => {
+                toast.success("User Details Updated", { theme: 'colored' })
+                getUsers();
+                setGender('')
+                setEditUser(false)
+                setShowAddModalAddUser(false)
+
+
+            }).catch(error => {
+                toast.error(error.response.data.error, { theme: 'colored' })
+            })
+
+        }
+    }
+
+
     useEffect(() => {
-        const token= localStorage.getItem('token');
-        if( (token=== null)){
-           navigate('/auth/signin') 
+        const token = localStorage.getItem('token');
+        if ((token === null)) {
+            navigate('/auth/signin')
         }
         getUsers();
         getUserPermissions()
@@ -380,7 +388,7 @@ const UserList = () => {
 
 
                                         <div className="grid grid-cols-6 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5">
-                                           
+
                                             <div className="col-span-1 flex items-center">
                                                 <p className="font-medium">Name</p>
                                             </div>
@@ -438,7 +446,7 @@ const UserList = () => {
                                                         <p className="text-sm text-meta-3"><button onClick={() => addPermissionModalOpen(item.id)}>Add Permissions</button></p>
                                                     </div>
                                                     <div className="col-span-1 flex items-center">
-                                                        <p className="text-sm text-meta-3"><button  onClick={()=>openModalEditUser(item.first_name, item.last_name, item.username, item.email, item.phone_number, item.address, item.city, item.state, item.gender, item.image_name, item.created_at,item.id)}>Edit User Details</button></p>
+                                                        <p className="text-sm text-meta-3"><button onClick={() => openModalEditUser(item.first_name, item.last_name, item.username, item.email, item.phone_number, item.address, item.city, item.state, item.gender, item.image_name, item.created_at, item.id)}>Edit User Details</button></p>
                                                     </div>
                                                 </div>
 
@@ -616,8 +624,26 @@ const UserList = () => {
                                                     htmlFor="checkboxChecked">
                                                     Profile
                                                 </label>
-                                            </div> 
+                                            </div>
+                                            <div className="mb-[0.125rem] block min-h-[1.5rem] pl-[1.5rem]">
+                                                <input
+                                                    className="relative float-left -ml-[1.5rem] mr-[6px] mt-[0.15rem] h-[1.125rem] w-[1.125rem] appearance-none rounded-[0.25rem] border-[0.125rem] border-solid border-neutral-300 outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                                                    type="checkbox"
+                                                    checked={rental_property}
+                                                    id="checkboxChecked"
+                                                    name="rental_property"
+                                                    onChange={() => {
+                                                        setRentalProperty(!rental_property);
+                                                    }}
 
+
+                                                />
+                                                <label
+                                                    className="inline-block pl-[0.15rem] hover:cursor-pointer"
+                                                    htmlFor="checkboxChecked">
+                                                    Rental Property
+                                                </label>
+                                            </div>
                                             <div className="mb-[0.125rem] block min-h-[1.5rem] pl-[1.5rem]">
                                                 <input
                                                     className="relative float-left -ml-[1.5rem] mr-[6px] mt-[0.15rem] h-[1.125rem] w-[1.125rem] appearance-none rounded-[0.25rem] border-[0.125rem] border-solid border-neutral-300 outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
@@ -653,7 +679,7 @@ const UserList = () => {
                                                 <label
                                                     className="inline-block pl-[0.15rem] hover:cursor-pointer"
                                                     htmlFor="checkboxChecked">
-                                                     Settings
+                                                    Settings
                                                 </label>
                                             </div>
 
@@ -673,7 +699,7 @@ const UserList = () => {
                                                 <label
                                                     className="inline-block pl-[0.15rem] hover:cursor-pointer"
                                                     htmlFor="checkboxChecked">
-                                                   Road Worthiness
+                                                    Road Worthiness
                                                 </label>
                                             </div>
 
@@ -903,15 +929,15 @@ const UserList = () => {
                                                                   </div>
                                                               </div>
                                                                 } */}
-                                                               
 
 
-                                                                {!edit_user &&   <button className="flex w-full justify-center rounded bg-success p-3 font-medium text-white mb-4" onClick={handleSubmitAddUsers} >
-                                                                    SAVE  
-                                                                </button> }
+
+                                                                {!edit_user && <button className="flex w-full justify-center rounded bg-success p-3 font-medium text-white mb-4" onClick={handleSubmitAddUsers} >
+                                                                    SAVE
+                                                                </button>}
                                                                 {edit_user && <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-white mb-4" onClick={handleUserDetailsEdit}>
-                                                                 Edit User Details
-                                                                  </button>}
+                                                                    Edit User Details
+                                                                </button>}
                                                                 <button className="flex w-full justify-center rounded bg-secondary p-3 font-medium text-white mb-4" onClick={clearDataAddUser}  >
                                                                     Clear
                                                                 </button>

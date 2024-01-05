@@ -554,23 +554,6 @@ const ViewMore = () => {
                                     />
 
 
-                                    {/* <button className="flex w-full mb-3 justify-center rounded bg-black p-3 font-medium text-white mb-4" onClick={sendReview}>
-                                        SEND FOR REVIEW
-                                    </button> */}
-
-                                    {/* <button
-                                        className={`flex w-full mb-3 justify-center rounded p-3 font-medium text-white ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-black'}`}
-                                        onClick={sendReview}
-                                        disabled={loading}
-                                    >
-                                        {loading ? 'SENDING...' : 'SEND FOR REVIEW'}
-                                    </button>
-
-
-
-                                    <h5 className="mb-2  font-semibold text-black dark:text-white">
-                                        Approve Request
-                                    </h5> */}
 
                                     <button
                                        className={`flex w-full mb-3 justify-center rounded p-3 font-medium text-white ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-black'}`}
@@ -592,16 +575,6 @@ const ViewMore = () => {
                                         {loading ? <div style={spinnerStyle} /> : 'SEND FOR REVIEW'}
                                     </button>
 
-                                    {/* <button className="flex w-full justify-center rounded bg-black p-3 font-medium text-white mb-4" onClick={approveStatus}>
-                                        Approve
-                                    </button> */}
-                                    {/* <button
-                                        className={`flex w-full justify-center rounded p-3 font-medium text-white ${loadingApprove ? 'bg-gray-500 cursor-not-allowed' : 'bg-black'}`}
-                                        onClick={approveStatus}
-                                        disabled={loadingApprove}
-                                    >
-                                        {loadingApprove ? 'APPROVING...' : 'APPROVE'}
-                                    </button> */}
                                     <button
                                         className={`flex w-full justify-center rounded p-3 font-medium text-white ${loadingApprove ? 'bg-gray-500 cursor-not-allowed' : 'bg-black'}`}
                                         style={{
@@ -741,26 +714,7 @@ const ViewMore = () => {
 
                                                 })}
 
-                                                {/* <h5 className="mb-2  font-semibold text-black dark:text-white">
-                                            Admin Uploaded  Files(Click to download files) 
-                                        </h5>
-                                        {newDoc.map((item, index) => {
-                                            if ((item.Key).split('admin_upload_document')) {
-                                                var href = `${values.location}${item.Key}`
-                                                return (
-                                                    <div key={index} className="w-full xl:w-1/2 mr-4" >
-
-                                                        <label className="mb-2.5 block text-black dark:text-white">
-                                                            <a href={href}>{(item.Key).split('admin_upload_document')[1]}</a>
-
-
-                                                        </label>
-
-                                                    </div>
-                                                );
-                                            }
-
-                                        })} */}
+                                               
                                                 <h5 className="mb-2  font-semibold text-black dark:text-white">
                                                     Admin Uploaded Files(Click to download files)
                                                 </h5>

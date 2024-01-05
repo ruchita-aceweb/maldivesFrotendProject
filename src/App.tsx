@@ -117,7 +117,9 @@ function App() {
           <Route path='/rental' element={<RequireAuth><Rental/></RequireAuth>}></Route>
           <Route path='/category' element={<RequireAuth><Category/></RequireAuth>}></Route>
           <Route path='/add/rental' element={<RequireAuth><AddRental/></RequireAuth>}></Route>
+          <Route path='/add/rental/:id?' element={<RequireAuth><AddRental/></RequireAuth>}></Route>
           <Route path='/add/category' element={<RequireAuth><AddCategory/></RequireAuth>}></Route>
+          <Route path='/add/category/:id?' element={<RequireAuth><AddCategory/></RequireAuth>}></Route>
           
           {routes.map((routes, index) => {
             const { path, component: Component } = routes;
