@@ -5,11 +5,20 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
+
+interface FormValues {
+  id: number | undefined;
+  title: string;
+ 
+  
+}
 const Category = () => {
   const navigate = useNavigate();
   const [category, setCategory] = useState<any[]>([])
   const [delete_ID, setDeleteID] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [showModalAdd, setShowModalAdd] = useState(false);
+  const [loading, setLoading] = useState(false);
   const apiUrl = 'http://localhost:3005/';
   const [permission, setPermission] = useState(false);
   const requestConfig = {
@@ -19,21 +28,26 @@ const Category = () => {
 
     }
   }
+
+const initialFValues: FormValues = {
+  id: undefined,
+  title: "",
+  
+};
+
+const [values, setValues] = useState<FormValues>(initialFValues);
+
   const addCategory = async (event: React.FormEvent) => {
     event.preventDefault();
-    navigate('/add/category')
+    setValues(initialFValues);
+    setShowModalAdd(true)
 
   }
- 
+
   const getUserPermissions = async () => {
     await axios.get(`${apiUrl}user/permissions`, requestConfig).then(response => {
       for (let i = 0; i < response.data.user_permissions.length; i++) {
-        // if (response.data.user_permissions[i].Name == "rental_property") {
-        //   setPermission(response.data.user_permissions[i].Value)
-        //   if (!response.data.user_permissions[i].Value) {
-        //     setPermission(false)
-        //   }
-        // }
+        
         if (response.data.user_permissions[i].Name == "admin") {
           setPermission(response.data.user_permissions[i].Value)
           if (!response.data.user_permissions[i].Value) {
@@ -51,9 +65,9 @@ const Category = () => {
 
   }
   const getCategory = async () => {
-    await axios.get(`${apiUrl}user/property/details`, requestConfig).then(response => {
+    await axios.get(`${apiUrl}admin/view/rental/category`, requestConfig).then(response => {
 
-      setCategory(response.data.admin_property.reverse())
+      setCategory(response.data.caregory.reverse())
     }).catch(error => {
       toast.error(error.response.data.error, { theme: 'colored' })
     })
@@ -64,11 +78,17 @@ const Category = () => {
     setShowModal(true)
     setDeleteID(id)
   }
-  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setValues({
+      ...values,
+      [name]: value,
+    });
+  };
   const deleteCategory = async (event: React.FormEvent) => {
 
     event.preventDefault();
-    await axios.delete(`${apiUrl}admin/rental/delete/${delete_ID}`, requestConfig).then(response => {
+    await axios.delete(`${apiUrl}admin/rental/category/delete/${delete_ID}`, requestConfig).then(response => {
       toast.success("Category Deleted", { theme: 'colored' })
       getCategory()
       setShowModal(false)
@@ -76,9 +96,52 @@ const Category = () => {
       toast.error(error.response.data.error, { theme: 'colored' })
     })
   }
-  async function editCategory(id: any) {
+  const handleEditSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+   if (values.title === "") {
+      toast.error("Please select the property type", { theme: 'colored' });
+    }  else {
+      setLoading(true);
      
-    navigate(`/add/category/${id}`)
+  
+   
+    const formData: FormValues = {
+      title:values.title,
+      id: values.id !== undefined ? values.id : 0,
+    };
+      try {
+        await axios.post(`${apiUrl}admin/add/rental/category`, formData, requestConfig);
+        toast.success("New category Added", { theme: 'colored' });
+        setValues(initialFValues);
+        setShowModalAdd(false);
+        getCategory()
+        
+      } 
+      catch (error) {
+        if (axios.isAxiosError(error)) {
+           if (error.response && error.response.data) {
+           
+            toast.error(error.response.data.error, { theme: 'colored' });
+          } else {
+            console.log("Unexpected error format");
+          }
+        } else {
+          console.log("Non-Axios error");
+        }
+      }
+      finally {
+        setLoading(false);
+      }
+    }
+  };
+  async function editCategory(id: any,title:any) {
+   
+    setValues({
+      id: id,
+      title: title,
+    })
+    setShowModalAdd(true)
   }
   useEffect(() => {
     getUserPermissions()
@@ -111,9 +174,7 @@ const Category = () => {
                     <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                       Property Type
                     </th>
-                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                      Property Category
-                    </th>
+                    
                     <th className="py-4 px-4 font-medium text-black dark:text-white">
                       Areated At
                     </th>
@@ -138,12 +199,7 @@ const Category = () => {
                           <p className="text-sm">{index + 1}</p>
                         </td>
                         <td className="py-5 px-4">
-                          <p className="text-black dark:text-white">{item.property_type}</p>
-                        </td>
-                        <td className="py-5 px-4">
-                          <p className="text-black dark:text-white">
-                            {item.property_category}
-                          </p>
+                          <p className="text-black dark:text-white">{item.title}</p>
                         </td>
                         <td className="py-5 px-4">
                           <p className="inline-flex rounded-full bg-warning bg-opacity-10 py-1 px-3 text-sm font-medium text-warning">
@@ -158,7 +214,8 @@ const Category = () => {
                         <td className="py-5 px-4">
                           <div className="flex items-center space-x-3.5">
                             <button className="hover:text-primary"
-                            onClick={() => editCategory(item.id)} 
+                              onClick={() => editCategory(item.id,item.title)}
+                             
                             >
                               <svg
                                 className="fill-current"
@@ -169,7 +226,7 @@ const Category = () => {
                                 xmlns="http://www.w3.org/2000/svg"
                               >
 
-                                    <path
+                                <path
                                   d="M4.66748 15.3296L14.684 5.31306L12.6869 3.31594L2.67041 13.3324L4.66748 15.3296ZM15.0909 4.84247C15.1849 4.74848 15.1849 4.586 15.0909 4.49198L13.2023 2.60342C13.1083 2.50944 12.9458 2.50944 12.8518 2.60342L11.3742 4.081L13.3713 6.07812L14.8489 4.60055C14.9429 4.50656 15.1054 4.50656 15.1994 4.60055L15.0909 4.84247Z"
                                   fill=""
                                 />
@@ -177,7 +234,7 @@ const Category = () => {
 
                             </button>
                             <button className="hover:text-primary"
-                            onClick={() => openDeleteModal(item.id)}
+                              onClick={() => openDeleteModal(item.id)}
                             >
                               <svg
                                 className="fill-current"
@@ -218,64 +275,126 @@ const Category = () => {
             </div>
             <ToastContainer />
           </div>
+
           {showModal ? (
-        <>
-          <div
-            className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-          >
-            <div className="relative w-auto my-6 mx-auto max-w-3xl">
-              {/*content*/}
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                {/*header*/}
-                <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
-                  <h3 className="text-3xl font-semibold">
-                    Delete Category
-                  </h3>
-                  <button
-                    className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                    onClick={() => setShowModal(false)}
-                  >
-                    <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-                      ×
-                    </span>
-                  </button>
+            <>
+              <div
+                className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+              >
+                <div className="relative w-auto my-6 mx-auto max-w-3xl">
+                  {/*content*/}
+                  <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                    {/*header*/}
+                    <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
+                      <h3 className="text-3xl font-semibold">
+                        Delete Category
+                      </h3>
+                      <button
+                        className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                        onClick={() => setShowModal(false)}
+                      >
+                        <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                          ×
+                        </span>
+                      </button>
+                    </div>
+                    {/*body*/}
+                    <div className="relative p-6 flex-auto">
+                      <p className="my-4 text-blueGray-500 text-lg leading-relaxed">
+                        Are you sure you want to delete this category?
+                      </p>
+                    </div>
+                    {/*footer*/}
+                    <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                      <button
+                        className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                        type="button"
+                        onClick={() => setShowModal(false)}
+                      >
+                        No
+                      </button>
+                      <button
+                        className="bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-sm px-6 py-3 rounded bg-danger hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                        type="button"
+                        onClick={deleteCategory}
+                      >
+                        Yes
+                      </button>
+
+                    </div>
+                  </div>
                 </div>
-                {/*body*/}
-                <div className="relative p-6 flex-auto">
-                  <p className="my-4 text-blueGray-500 text-lg leading-relaxed">
-                    Are you sure you want to delete this category?
-                  </p>
-                </div>
-                {/*footer*/}
-                <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+              </div>
+              <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+            </>
+          ) : null}
+
+
+
+
+          {showModalAdd ? (
+            <>
+              <div
+                className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+              >
+                <div className="relative w-auto my-6 mx-auto max-w-3xl">
+                  {/*content*/}
+                  <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                    {/*header*/}
+                    <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
+                      <h3 className="text-3xl font-semibold">
+                        Add  Rent Property Category Title
+                      </h3>
+                      <button
+                        className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                        onClick={() => setShowModalAdd(false)}
+                      >
+                        <span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+                          ×
+                        </span>
+                      </button>
+                    </div>
+                    {/*body*/}
+                    <div className="relative p-6 flex-auto">
+                      <div className="flex-col w-full">
+                        <label className="mb-3 block text-black dark:text-white">Title</label>
+                        <input
+                          name="title"
+                          value={values.title}
+                          onChange={handleInputChange}
+                          type="text"
+                          placeholder="Property Category"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-11 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                        />
+                      </div>
+                    </div>
+                    {/*footer*/}
+                    <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                   <button
                     className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    onClick={() => setShowModal(false)}
+                    onClick={() => setShowModalAdd(false)}
                   >
-                    No
+                    Cancel
                   </button>
                   <button
                     className="bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-sm px-6 py-3 rounded bg-danger hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    onClick={deleteCategory}
+                    onClick={handleEditSubmit}
                   >
-                    Yes
+                    Save
                   </button>
 
                 </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-        </>
-      ) : null}
+              <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+            </>
+          ) : null}
         </div>
-      }
-
-
-
-    </>
+  }
+   </>
   )
 }
 

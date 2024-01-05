@@ -27,8 +27,10 @@ const AddRental = () => {
 
   
   const [type, setType] = useState('');
+  const [category_list, setCategoryList] = useState('');
+  const [rent_frequency, setRentFrequency] = useState('');
   const [rental, setRental] = useState<any[]>([])
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState<any[]>([])
   const [image_url, setImageUrl] = useState('');
   const [description, setDescription] = useState('');
   const [permission, setPermission] = useState(false);
@@ -65,15 +67,23 @@ const AddRental = () => {
 
     if (value.length > 0) {
 
-      setCategory(event.target.value)
+      setCategoryList(event.target.value)
     }
+  }
+  const handleSelectChangeFequency = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
 
-  };
+    if (value.length > 0) {
+
+      setRentFrequency(event.target.value)
+    }
+  }
+  
 
   const navigate = useNavigate();
   const backSRental = async (event: React.FormEvent) => {
     event.preventDefault();
-    navigate('/rental')
+    navigate('/view/rental')
 
   }
 
@@ -101,15 +111,15 @@ const AddRental = () => {
     });
   };
 
-  const getAdminRentals = async () => {
-    await axios.get(`${apiUrl}user/property/details`, requestConfig).then(response => {
-      setRental(response.data.admin_property.reverse())
-    }).catch(error => {
-      toast.error(error.response.data.error, { theme: 'colored' })
-    })
+  // const getAdminRentals = async () => {
+  //   await axios.get(`${apiUrl}user/property/details`, requestConfig).then(response => {
+  //     setRental(response.data.admin_property.reverse())
+  //   }).catch(error => {
+  //     toast.error(error.response.data.error, { theme: 'colored' })
+  //   })
 
 
-  }
+  // }
 
   const handleEditSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -123,10 +133,11 @@ const AddRental = () => {
     else if (type === "") {
       toast.error("Please select the property type", { theme: 'colored' });
     }
-    else if (category === "") {
+    else if (category_list === "") {
       toast.error("Please select the property category", { theme: 'colored' });
     }
-    else if (values.rent_frequency === "") {
+    
+    else if (rent_frequency === "") {
       toast.error("Please file the rent frequency", { theme: 'colored' });
     }
     else if (values.rate === "") {
@@ -141,9 +152,9 @@ const AddRental = () => {
       formData.append('title', values.title);
       formData.append('uuID', String(requestConfig.headers.uu_id));
       formData.append('file', selectedFilesNewOwner);
-      formData.append('type', type);
-      formData.append('category', category);
-      formData.append('rent_frequency', values.rent_frequency);
+      formData.append('type_id', type);
+      formData.append('category_id', category_list);
+      formData.append('rent_frequency',rent_frequency);
       formData.append('rate', values.rate);
       formData.append('description', description);
 
@@ -156,12 +167,11 @@ const AddRental = () => {
         toast.success(res.data.status, { theme: 'colored' });
         setValues(initialFValues);
         setType('')
-        setCategory('')
-        setDescription('')
+         setDescription('')
         setSelectedFileNewOwner(null);
 
         setShow(false);
-        navigate('/rental')
+        navigate('/view/rental')
       } 
       
      
@@ -220,28 +230,48 @@ const AddRental = () => {
   const getEditRental = async () => {
     if (id != null) {
       await axios.get(`${apiUrl}user/rental/view/${id}`, requestConfig).then(response => {
+        console.log(response.data.property)
         setValues((prevValues) => ({
           ...prevValues,
           id: response.data.property.id,
           title: response.data.property.title,
-          rent_frequency: response.data.property.rent_frequency,
           rate: response.data.property.rate,
           image: response.data.property.image
 
 
         }));
-
-        setType(response.data.property.type)
-        setCategory(response.data.property.category)
+        setRentFrequency(response.data.property.rent_frequency)
+        setType(response.data.property.type_id)
+        setCategoryList(response.data.property.category_id)
         setDescription(response.data.property.description)
-        setSelectedFileNewOwner(response.data.property.image)
-        setImageShow(true)
-        setImageUrl(response.data.property.image)
+         setSelectedFileNewOwner(response.data.property.image)
+         setImageShow(true)
+         setImageUrl(response.data.property.image)
       }).catch(error => {
         console.log(error)
       })
     }
 
+
+
+  }
+  const getRental = async () => {
+    await axios.get(`${apiUrl}admin/view/rental/type`, requestConfig).then(response => {
+      setRental(response.data.type.reverse())
+
+    }).catch(error => {
+      toast.error(error.response.data.error, { theme: 'colored' })
+    })
+
+
+  }
+  const getCategory = async () => {
+    await axios.get(`${apiUrl}admin/view/rental/category`, requestConfig).then(response => {
+
+      setCategory(response.data.caregory.reverse())
+    }).catch(error => {
+      toast.error(error.response.data.error, { theme: 'colored' })
+    })
 
 
   }
@@ -251,8 +281,9 @@ const AddRental = () => {
       navigate('/auth/signin')
     }
     getUserPermissions()
-    getAdminRentals();
+    getRental();
     getEditRental()
+    getCategory()
 
   }, [])
   
@@ -298,14 +329,18 @@ const AddRental = () => {
                   </div>
                   <div className="flex-col w-full">
                     <label className="mb-3 block text-black dark:text-white">Rent Frequency</label>
-                    <input
-                      type="text"
-                      name="rent_frequency"
-                      value={values.rent_frequency}
-                      onChange={handleInputChange}
-                      placeholder="Rent Frequency"
+                    
+                     <select
+                      value={rent_frequency}
+                      onChange={handleSelectChangeFequency}
+                      name="category"
                       className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-11 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                    />
+                    >
+                       <option value="" selected>Select a Type</option>
+                       <option value="daily" selected>daily</option>
+                       <option value="hourly" selected>hourly</option>
+
+                    </select>
                   </div>
                   <div className="flex-col w-full">
                     <label className="mb-3 block text-black dark:text-white">Rate</label>
@@ -329,16 +364,13 @@ const AddRental = () => {
                     <select
                       value={type}
                       onChange={handleSelectChangeType}
-                      name="category"
+                      name="type"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     >
                       <option value="" selected>Select a Type</option>
                       {rental.map((item, index) => {
-
-
-                        return (
-
-                          <option value={item.property_type}>{item.property_type}</option>
+                              return (
+                             <option value={item.id}>{item.title}</option>
                         );
                       })}
 
@@ -348,18 +380,15 @@ const AddRental = () => {
                   <div className="flex-col w-full">
                     <label className="mb-3 block text-black dark:text-white">Property Category</label>
                     <select
-                      value={category}
-                      onChange={handleSelectChangeCategory}
-                      name="category"
+                      value={category_list}
+                       onChange={handleSelectChangeCategory}
+                      name="category_list"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     >
                       <option value="" selected>Select a Category</option>
-                      {rental.map((item, index) => {
-
-
-                        return (
-
-                          <option value={item.property_category}>{item.property_category}</option>
+                      {category.map((item, index) => {
+                          return (
+                       <option value={item.id}>{item.title}</option>
                         );
                       })}
                     </select>

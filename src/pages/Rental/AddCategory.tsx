@@ -123,7 +123,7 @@ const [permission, setPermission] = useState(false);
       console.log(formData)
     
       try {
-        await axios.post(`${apiUrl}admin/add/rental`, formData, requestConfig);
+        await axios.post(`${apiUrl}admin/add/rentals`, formData, requestConfig);
         toast.success("New category Added", { theme: 'colored' });
         setValues(initialFValues);
         setShow(false);

@@ -20,6 +20,7 @@ import Rental from './pages/Rental/Rental';
 import Category from './pages/Rental/Category';
 import AddRental from './pages/Rental/AddRental';
 import AddCategory from './pages/Rental/AddCategory';
+import ViewRental from './pages/Rental/ViewRental';
 import Loader from './common/Loader'; 
 import routes from './routes';
 
@@ -75,18 +76,7 @@ function App() {
 
   useEffect(() => {
     verify()
-    
-      // if( (token=== null)){
-      //    navigate('/auth/signin') 
-         
-      //  }
-      //  if(sign_up !=null){
-      //   navigate('/auth/signup') 
-        
-      // }
-       
-  
-    
+      
   }, [location]);
   return loading ? (
     <Loader />
@@ -117,6 +107,7 @@ function App() {
           <Route path='/rental' element={<RequireAuth><Rental/></RequireAuth>}></Route>
           <Route path='/category' element={<RequireAuth><Category/></RequireAuth>}></Route>
           <Route path='/add/rental' element={<RequireAuth><AddRental/></RequireAuth>}></Route>
+          <Route path='/view/rental' element={<RequireAuth><ViewRental/></RequireAuth>}></Route>
           <Route path='/add/rental/:id?' element={<RequireAuth><AddRental/></RequireAuth>}></Route>
           <Route path='/add/category' element={<RequireAuth><AddCategory/></RequireAuth>}></Route>
           <Route path='/add/category/:id?' element={<RequireAuth><AddCategory/></RequireAuth>}></Route>
