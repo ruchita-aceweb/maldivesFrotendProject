@@ -17,13 +17,15 @@ const TableOne = () => {
     id: 0,
     product_name: "",
     price: 0,
+    qty:0
   }
  
   const initialFValuesReplicate = {
     id: 0,
     product_name: "",
     price: 0,
-    created_at:""
+    created_at:"",
+    qty:0
   }
   const navigate = useNavigate();
   const [permission, setPermission] = useState(false);
@@ -79,6 +81,7 @@ const TableOne = () => {
       const requestBody = {
         "product_name": values.product_name,
         "price": values.price,
+        "qty": values.qty,
         "Content-Type": 'application/json'
       }
 
@@ -178,22 +181,24 @@ const TableOne = () => {
     setRepProductName('')
     
   }
-  async function editProduct(id: any, product_name: any, price: number) {
+  async function editProduct(id: any, product_name: any, price: number,qty:number) {
     setEdit(true)
     setShowAddModal(true)
     setValues({
       id: id,
       product_name: product_name,
-      price: price
+      price: price,
+      qty:qty
     })
   }
-  async function openDeleteModalReplicate(id: any, product_name: any, price: number,date:any) {
+  async function openDeleteModalReplicate(id: any, product_name: any, price: number,date:any,qty:number) {
     setShowAddRepModal(true)
     setValuesRep({
       id: id,
       product_name: product_name,
       price: price,
-      created_at:date
+      created_at:date,
+      qty:qty
     })
   }
   
@@ -210,6 +215,7 @@ const TableOne = () => {
         "product_name": values.product_name,
         "price": values.price,
         "id": values.id,
+        "qty": values.qty,
         "Content-Type": 'application/json'
       }
 
@@ -360,6 +366,9 @@ const TableOne = () => {
                       Price
                     </th>
                     <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                         Quantity
+                      </th>
+                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                       Date
                     </th>
                     <th className="py-4 px-4 font-medium text-black dark:text-white">
@@ -377,18 +386,19 @@ const TableOne = () => {
                           <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"> <p className="text-black dark:text-white">{index + 1}</p></td>
                           <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"> <p className="text-black dark:text-white">{item.product_name}</p></td>
                           <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"><p className="text-black dark:text-white">{item.price}</p></td>
+                          <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"><p className="text-black dark:text-white">{item.qty}</p></td>
                           <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"><p className="text-black dark:text-white">{item.created_at}</p></td>
                           <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                             <div className="flex items-center space-x-3.5">
-                              <button className="hover:text-primary" style={{ color: 'green' }} onClick={() => editProduct(item.id, item.product_name, item.price)}>
+                              <button className="hover:text-primary" style={{ color: 'green' }} onClick={() => editProduct(item.id, item.product_name, item.price,item.qty)}>
                                 Edit
                               </button>
-                              <button className="hover:text-primary" style={{ color: '#FFA533' }} onClick={() => openDeleteModalReplicate(item.id, item.product_name, item.price,item.created_at)}>
+                              <button className="hover:text-primary" style={{ color: '#FFA533' }} onClick={() => openDeleteModalReplicate(item.id, item.product_name, item.price,item.created_at,item.qty)}>
                                 Replicate
                               </button>
 
                               <button className="hover:text-primary" style={{ color: 'red' }} onClick={() => openDeleteModal(item.id)}>
-                                Add To Recycle
+                                Add to recycle
                               </button>
                             </div>
                           </td>
@@ -426,7 +436,10 @@ const TableOne = () => {
                         Product Name
                       </th>
                       <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                        Price
+                        Price 
+                      </th>
+                      <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                         Quantity
                       </th>
                       <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                         Date
@@ -446,10 +459,11 @@ const TableOne = () => {
                             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"> <p className="text-black dark:text-white">{index + 1}</p></td>
                             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"> <p className="text-black dark:text-white">{item.product_name}</p></td>
                             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"><p className="text-black dark:text-white">{item.price}</p></td>
+                            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"><p className="text-black dark:text-white">{item.qty}</p></td>
                             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"><p className="text-black dark:text-white">{item.created_at}</p></td>
                             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                               <div className="flex items-center space-x-3.5">
-                                <button className="hover:text-primary" style={{ color: 'green' }} onClick={() => editProduct(item.id, item.product_name, item.price)}>
+                                <button className="hover:text-primary" style={{ color: 'green' }} onClick={() => editProduct(item.id, item.product_name, item.price,item.qty)}>
                                   Edit 
                                 </button>
 
@@ -667,10 +681,7 @@ const TableOne = () => {
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
                 <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        {/* <h2 className="text-title-md2 font-semibold text-black dark:text-white">
-        Add Product Form
-        </h2> */}
-
+       
         <nav>
           <ol className="flex items-center gap-2">
             <li>
@@ -684,11 +695,7 @@ const TableOne = () => {
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-1">
         <div className="flex flex-col gap-9">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            {/* <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Add Product Form
-              </h3>
-            </div> */}
+            
             <form action="#">
               <div className="p-6.5">
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
@@ -712,6 +719,18 @@ const TableOne = () => {
                       type="number"
                       placeholder="Prosuct Price"
                       name="price" value={values.price} onChange={handleInputChange}
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    />
+                  </div>
+
+                  <div className="w-full xl:w-1/2">
+                    <label className="mb-2.5 block text-black dark:text-white">
+                    Quantity
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="quantity"
+                      name="qty" value={values.qty} onChange={handleInputChange}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
                   </div>
@@ -829,6 +848,18 @@ const TableOne = () => {
                       type="number"
                       placeholder="Prosuct Price"
                       name="price_rep" value={value_rep.price} onChange={handleInputChangeRep}
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    />
+                  </div>
+
+                  <div className="w-full xl:w-1/2">
+                    <label className="mb-2.5 block text-black dark:text-white">
+                    Quantity
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="Quantity"
+                      name="qty" value={value_rep.qty} onChange={handleInputChangeRep}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     />
                   </div>
