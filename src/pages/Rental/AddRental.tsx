@@ -110,18 +110,7 @@ const AddRental = () => {
       [name]: value,
     });
   };
-
-  // const getAdminRentals = async () => {
-  //   await axios.get(`${apiUrl}user/property/details`, requestConfig).then(response => {
-  //     setRental(response.data.admin_property.reverse())
-  //   }).catch(error => {
-  //     toast.error(error.response.data.error, { theme: 'colored' })
-  //   })
-
-
-  // }
-
-  const handleEditSubmit = async (event: React.FormEvent) => {
+ const handleEditSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!selectedFilesNewOwner) {
@@ -454,18 +443,6 @@ const AddRental = () => {
                 </div>
               </div>
 
-              {/* <img src={values.image}/>   
-              <div className="flex flex-row gap-5.5 p-6.5">
-                <textarea
-                  name="comment" value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Description"
-                  className="w-full mb-3 rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-11 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                />
-
-
-
-              </div> */}
               <div className="flex flex-row gap-5.5 p-6.5">
                 
 

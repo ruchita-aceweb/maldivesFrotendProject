@@ -19,8 +19,11 @@ import MyProfile from './pages/Settings';
 import Rental from './pages/Rental/Rental';
 import Category from './pages/Rental/Category';
 import AddRental from './pages/Rental/AddRental';
+import Booking from './pages/Booking/Booking';
+import AddBooking from './pages/Booking/AddBooking';
 import AddCategory from './pages/Rental/AddCategory';
 import ViewRental from './pages/Rental/ViewRental';
+import DatePicker from './pages/DatePicker';
 import Loader from './common/Loader'; 
 import routes from './routes';
 
@@ -111,7 +114,12 @@ function App() {
           <Route path='/add/rental/:id?' element={<RequireAuth><AddRental/></RequireAuth>}></Route>
           <Route path='/add/category' element={<RequireAuth><AddCategory/></RequireAuth>}></Route>
           <Route path='/add/category/:id?' element={<RequireAuth><AddCategory/></RequireAuth>}></Route>
-          
+          <Route path='/booking' element={<RequireAuth><Booking/></RequireAuth>}></Route>
+          <Route path='/add/booking/:id?' element={<RequireAuth><AddBooking/></RequireAuth>}></Route>
+          <Route path='/add/booking/:id?' element={<RequireAuth><AddBooking/></RequireAuth>}></Route>
+
+          <Route path='/date' element={<RequireAuth><DatePicker/></RequireAuth>}></Route>
+                
           {routes.map((routes, index) => {
             const { path, component: Component } = routes;
             return (

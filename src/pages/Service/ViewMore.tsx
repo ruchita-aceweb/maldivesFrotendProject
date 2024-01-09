@@ -284,64 +284,7 @@ const ViewMore = () => {
         };
     }, []);
 
-
-    // useEffect(() => {
-    //     // Create the WebSocket connection
-    //     socketRef.current = new WebSocket('ws://localhost:3006');
-
-    //     // Function to send headers as the first message
-    //     // const sendHeaders = () => {
-    //     //     if (socketRef.current) {
-    //     //       const headers = {
-    //     //         token: localStorage.getItem('token'),
-    //     //         uu_id: localStorage.getItem('uuID'),
-    //     //         param_id: id,
-    //     //       };
-    //     //       socketRef.current.send(JSON.stringify(headers));
-    //     //     }
-    //     //   };
-    //     const sendHeaders = () => {
-    //         if (socketRef.current) {
-    //           const headers = {
-    //             token: localStorage.getItem('token'),
-    //             uu_id: localStorage.getItem('uuID'),
-    //             param_id: id,
-    //           };
-    //           const jsonMessage = JSON.stringify(headers);
-    //           socketRef.current.send(jsonMessage);
-    //         }
-    //       };
-
-    //     // Event handler for when the connection is open
-    //     const handleOpen = (event: Event) => {
-    //       console.log('Connected');
-    //       sendHeaders(); // Send headers once the connection is open
-
-    //     };
-
-    //     // Event handler for incoming messages
-    //     const handleMessage = (event: MessageEvent) => {
-    //       console.log('Message', (JSON.parse(event.data)).reverse());
-    //       setComments((JSON.parse(event.data)).reverse())
-    //     };
-
-    //     // Add event listeners
-    //     if (socketRef.current) {
-    //       socketRef.current.addEventListener('open', handleOpen);
-    //       socketRef.current.addEventListener('message', handleMessage);
-    //     }
-
-    //     // Cleanup by removing event listeners when the component unmounts
-    //     return () => {
-    //       if (socketRef.current) {
-    //         socketRef.current.removeEventListener('open', handleOpen);
-    //         socketRef.current.removeEventListener('message', handleMessage);
-    //       }
-    //     };
-    //   }, []); // No dependencies, so it runs once on mount
-
-
-    return (
+ return (
         <>
             {!permission_service && <h2>No Access For You.!</h2>}
             {permission_service &&

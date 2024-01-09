@@ -221,7 +221,7 @@ const [road_worthiness, setRoadWorthiness] = useState<boolean>(false);
     <div>
        <div className="w-full xl:w-1/4">
         <label className="mb-2.5 block text-black dark:text-white">
-          Servicesid="gender" 
+          Services
         </label>
         <button className="flex w-full justify-center rounded bg-danger p-3 font-medium text-white mb-4" onClick={backServices}>
           BACK SERVICES
@@ -305,12 +305,6 @@ const [road_worthiness, setRoadWorthiness] = useState<boolean>(false);
            className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-11 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
          />
 
-{/* <input
-           name="vehicle_number_11" value={values.vehicle_number_11} onChange={handleInputChange}
-           type="text"
-           placeholder="dsdsds"
-           className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-11 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-         /> */}
        </div>
        <div className="flex-col">
          <label className="mb-3 block text-black dark:text-white">
