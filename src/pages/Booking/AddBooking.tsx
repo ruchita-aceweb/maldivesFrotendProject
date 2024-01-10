@@ -3,32 +3,30 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
-import Datepicker from "react-tailwindcss-datepicker";
+import Datepicker ,{ DateRangeType }from "react-tailwindcss-datepicker";
 
 interface FormValues {
     id: number | undefined;
     adults: number;
     kids: number;
-    property:string;
-    property_type:string;
-    description:string;
-    startDate:string;
-    endDate:string;
-   
-    
-  }
+    rental_property_id: string;
+    start_date: string;
+    end_date: string;
+    message:string
+
+
+}
 const AddBooking = () => {
     const navigate = useNavigate();
     const initialFValues: FormValues = {
         id: undefined,
         adults: 1,
         kids: 0,
-        property:"",
-        property_type:"",
-        description:"",
-        endDate:"",
-        startDate:"",
-        
+        rental_property_id: "",
+        end_date: "",
+        start_date: "",
+        message:""
+
     }
     const [values, setValues] = useState(initialFValues);
     const [loading, setLoading] = useState(false);
@@ -37,6 +35,9 @@ const AddBooking = () => {
     const [property, setProperty] = useState('');
     const apiUrl = 'http://localhost:3005/';
     const [permission, setPermission] = useState(false);
+    const [type, setTypes] = useState<any[]>([])
+    const [rental, setRental] = useState<any[]>([])
+    const [show, setShow] = useState(false);
     const requestConfig = {
         headers: {
             'token': localStorage.getItem('token'),
@@ -64,11 +65,16 @@ const AddBooking = () => {
         setDate(newValue);
 
     }
+
     const handleSelectChangeType = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const value = event.target.value;
 
         if (value.length > 0) {
             setPropertyType(event.target.value)
+            setShow(true)
+        } else {
+            setPropertyType('')
+            setShow(false)
         }
 
     };
@@ -142,61 +148,96 @@ const AddBooking = () => {
     const handleEditSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        if (values.adults =0) {
+        if (values.adults == 0) {
             toast.error("Please enter adults count", { theme: 'colored' });
-        } 
+        }
         else if (property === "") {
             toast.error("Please select the property", { theme: 'colored' });
-        } 
+        }
         else if (property_type === "") {
             toast.error("Please select the property type", { theme: 'colored' });
         }
-        else if (date.startDate ==null || date.endDate==null) {
+        else if (date.startDate == null || date.endDate == null) {
             toast.error("Please select date", { theme: 'colored' });
         }
-        
-        
+
+
         else {
             setLoading(true);
 
 
-
             const formData: FormValues = {
-                property: property,
-                property_type:property_type,
+                rental_property_id: property,
                 adults: values.adults,
                 kids: values.kids,
-                description:description,
-                endDate:date.endDate,
-                startDate:date.startDate,
+                end_date: date.endDate,
+                start_date: date.startDate,
+                message:description,
                 id: values.id !== undefined ? values.id : 0,
             };
             console.log(formData)
-            // try {
-            //     await axios.post(`${apiUrl}admin/add/rental/category`, formData, requestConfig);
-            //     toast.success("New category Added", { theme: 'colored' });
-            //     setValues(initialFValues);
-            //     setShowModalAdd(false);
-            //     getCategory()
+           try {
+                await axios.post(`${apiUrl}user/add/booking`, formData, requestConfig);
+                toast.success("New Booking Added", { theme: 'colored' });
+                setValues(initialFValues);
+                 navigate('/booking')
 
-            // }
-            // catch (error) {
-            //     if (axios.isAxiosError(error)) {
-            //         if (error.response && error.response.data) {
+            }
+            catch (error) {
+                console.log(error)
+                if (axios.isAxiosError(error)) {
+                    if (error.response && error.response.data) {
 
-            //             toast.error(error.response.data.error, { theme: 'colored' });
-            //         } else {
-            //             console.log("Unexpected error format");
-            //         }
-            //     } else {
-            //         console.log("Non-Axios error");
-            //     }
-            // }
-            // finally {
-            //     setLoading(false);
-            // }
+                        toast.error(error.response.data.error, { theme: 'colored' });
+                    } else {
+                        console.log("Unexpected error format");
+                    }
+                } else {
+                    console.log("Non-Axios error");
+                }
+            }
+            finally {
+                setLoading(false);
+            }
         }
     };
+    const getTypes = async () => {
+
+        await axios.get(`${apiUrl}user/view/rental/type`, requestConfig).then(response => {
+            setTypes(response.data.type)
+        }).catch(error => {
+            toast.error(error.response.data.error, { theme: 'colored' })
+        })
+
+    }
+    const getRental = async () => {
+        await axios.get(`${apiUrl}user/rental/property/details`, requestConfig).then(response => {
+          setRental(response.data.property)
+    
+        }).catch(error => {
+          toast.error(error.response.data.error, { theme: 'colored' })
+        })
+    
+    
+      }
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if ((token === null)) {
+            navigate('/auth/signin')
+        }
+        getTypes();
+        getRental()
+
+
+    }, [])
+    const disabledDates: DateRangeType[] = [
+        {
+          startDate: new Date(0), // Start of time
+          endDate: new Date(),
+        },
+      ];
+   
+
     return (
         <>
             <div>
@@ -228,30 +269,40 @@ const AddBooking = () => {
                                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                 >
                                     <option value="" selected>Select a service</option>
-                                    <option value="Marine Vehicle Registry">Room</option>
-                                    <option value="Hull Number">Speed Boat</option>
-                                    <option value="Land Vehicle Registry"> Sand Bank</option>
-                                    <option value="Land Vehicle Registry"> Rental Item</option>
-                                </select>
-                            </div>
-                            <div className="flex-col flex-1">
-                                <label className="mb-3 block text-black dark:text-white">
-                                    Select a property
-                                </label>
-                                <select
-                                    id="gender"
-                                    name="property"
-                                    value={property}
-                                    onChange={handleSelectChangeProperty}
+                                    {type.map((item, index) => {
+                                        return (
+                                            <option value={item.id}>{item.title}</option>
+                                        );
+                                    })}
 
-                                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                                >
-                                    <option value="" selected>Select a service</option>
-                                    <option value="Marine Vehicle Registry">Marine Vehicle Registry</option>
-                                    <option value="Hull Number">Hull Number</option>
-                                    <option value="Land Vehicle Registry">Land Vehicle Registry</option>
                                 </select>
                             </div>
+                            {show &&
+                                <div className="flex-col flex-1">
+                                    <label className="mb-3 block text-black dark:text-white">
+                                        Select a property
+                                    </label>
+                                    <select
+                                        id="gender"
+                                        name="property"
+                                        value={property}
+                                        onChange={handleSelectChangeProperty}
+
+                                        className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                    >
+                                        <option value="" selected>Select a service</option>
+                                        {rental.map((item, index) => {
+                                            if(item.type_id==property_type){
+                                                return (
+                                                    <option value={item.id}>{item.title}</option>
+                                                );
+                                            }
+                                        
+                                    })}
+                                    </select>
+                                </div>
+
+                            }
 
                             <div className="flex-col flex-1 ">
                                 <label className="mb-3 block text-black dark:text-white">
@@ -259,11 +310,14 @@ const AddBooking = () => {
                                 </label>
                                 <div className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-11 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                 >
+                                    
                                     <Datepicker
-                                        primaryColor={"blue"}
+                                       primaryColor="blue"
                                         value={date}
                                         onChange={handleValueChange}
                                         showShortcuts={true}
+                                        disabledDates={disabledDates}
+                                        
                                     />
                                 </div>
 

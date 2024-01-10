@@ -11,6 +11,32 @@ const Booking = () => {
         navigate('/add/booking')
        
       }
+      const apiUrl = 'http://localhost:3005/';
+      const requestConfig = {
+          headers: {
+              'token': localStorage.getItem('token'),
+              'uu_id': localStorage.getItem('uuID')
+  
+          }
+      }
+    //   const getUsers = async () => {
+       
+    //     await axios.get(`${apiUrl}user/add/booking`, requestConfig).then(response => {
+    //         console.log(response.data)
+    //     }).catch(error => {
+    //         toast.error(error.response.data.error, { theme: 'colored' })
+    //     })
+
+    // }
+      useEffect(() => {
+        const token = localStorage.getItem('token');
+        if ((token === null)) {
+            navigate('/auth/signin')
+        }
+       // getUsers();
+        
+
+    }, [])
     return (
         <>
         <div>
