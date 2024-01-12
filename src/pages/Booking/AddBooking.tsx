@@ -3,7 +3,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
-import Datepicker ,{ DateRangeType }from "react-tailwindcss-datepicker";
+import Datepicker, { DateRangeType } from "react-tailwindcss-datepicker";
+import "./custom-datepicker-styles.css";
 
 interface FormValues {
     id: number | undefined;
@@ -12,7 +13,7 @@ interface FormValues {
     rental_property_id: string;
     start_date: string;
     end_date: string;
-    message:string
+    message: string
 
 
 }
@@ -25,10 +26,18 @@ const AddBooking = () => {
         rental_property_id: "",
         end_date: "",
         start_date: "",
-        message:""
+        message: ""
 
     }
+    const [disabledDates, setDisabledDates] = useState<DateRangeType[]>([
+        {
+          startDate: new Date(0), // Start of time
+          endDate: new Date(),
+        },
+      ]);
     const [values, setValues] = useState(initialFValues);
+    const [booking, setBooking] = useState<any[]>([])
+    const [test, setTest] = useState<any[]>([])
     const [loading, setLoading] = useState(false);
     const [description, setDescription] = useState('');
     const [property_type, setPropertyType] = useState('');
@@ -172,15 +181,15 @@ const AddBooking = () => {
                 kids: values.kids,
                 end_date: date.endDate,
                 start_date: date.startDate,
-                message:description,
+                message: description,
                 id: values.id !== undefined ? values.id : 0,
             };
             console.log(formData)
-           try {
+            try {
                 await axios.post(`${apiUrl}user/add/booking`, formData, requestConfig);
                 toast.success("New Booking Added", { theme: 'colored' });
                 setValues(initialFValues);
-                 navigate('/booking')
+                navigate('/booking')
 
             }
             catch (error) {
@@ -212,8 +221,34 @@ const AddBooking = () => {
     }
     const getRental = async () => {
         await axios.get(`${apiUrl}user/rental/property/details`, requestConfig).then(response => {
-          setRental(response.data.property)
-    
+            setRental(response.data.property)
+
+        }).catch(error => {
+            toast.error(error.response.data.error, { theme: 'colored' })
+        })
+
+
+    }
+    const getBooking = async () => {
+        await axios.get(`${apiUrl}user/view/bookings`, requestConfig).then(response => {
+            console.log(response.data.booking)
+            setBooking(response.data.booking.reverse())
+            const newDisabledDates: DateRangeType[] = [
+                {
+                  startDate: new Date(0),
+                  endDate: new Date(),
+                },
+              ];
+        
+              for (let i = 0; i < response.data.booking.length; i++) {
+                newDisabledDates.push({
+                  startDate: new Date(response.data.booking[i].start_date),
+                  endDate: new Date(response.data.booking[i].end_date),
+                });
+              }
+        
+              setDisabledDates(newDisabledDates);
+             
         }).catch(error => {
           toast.error(error.response.data.error, { theme: 'colored' })
         })
@@ -227,16 +262,21 @@ const AddBooking = () => {
         }
         getTypes();
         getRental()
+        getBooking()
 
 
     }, [])
-    const disabledDates: DateRangeType[] = [
-        {
-          startDate: new Date(0), // Start of time
-          endDate: new Date(),
-        },
-      ];
-   
+//     const disabledDates: DateRangeType[] = [
+//         {
+//             startDate: new Date(0), // Start of time
+//             endDate: new Date(),
+//         },
+        
+// {startDate: '2024-01-12', endDate: '2024-01-13'},
+// {startDate: '2024-01-01', endDate: '2024-02-04'}
+       
+//     ];
+
 
     return (
         <>
@@ -292,13 +332,13 @@ const AddBooking = () => {
                                     >
                                         <option value="" selected>Select a service</option>
                                         {rental.map((item, index) => {
-                                            if(item.type_id==property_type){
+                                            if (item.type_id == property_type) {
                                                 return (
                                                     <option value={item.id}>{item.title}</option>
                                                 );
                                             }
-                                        
-                                    })}
+
+                                        })}
                                     </select>
                                 </div>
 
@@ -310,15 +350,17 @@ const AddBooking = () => {
                                 </label>
                                 <div className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-2 px-11 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                 >
-                                    
+
                                     <Datepicker
-                                       primaryColor="blue"
+                                       
                                         value={date}
                                         onChange={handleValueChange}
                                         showShortcuts={true}
                                         disabledDates={disabledDates}
                                         
+                                      
                                     />
+                                    
                                 </div>
 
                             </div>
