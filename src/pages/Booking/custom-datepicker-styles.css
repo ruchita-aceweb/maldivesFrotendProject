@@ -1,0 +1,5 @@
+/* custom-datepicker-styles.css */
+.react-datepicker__day--selected {
+    background-color: #0070a3 !important; /* Darker blue for the selected range */
+  }
+  
