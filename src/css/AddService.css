@@ -1,0 +1,50 @@
+.step-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 9rem; /* Equivalent to w-36 in Tailwind */
+}
+
+.step-item:not(:first-child):before {
+  content: '';
+  background-color: #cbd5e0; /* Replace with your bg-slate-200 color */
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.step {
+  position: relative;
+  width: 2.5rem; /* Equivalent to w-10 in Tailwind */
+  height: 2.5rem; /* Equivalent to h-10 in Tailwind */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  background-color: #4a5568; /* Replace with your bg-slate-700 color */
+  border-radius: 9999px; /* Equivalent to rounded-full in Tailwind */
+  font-weight: 600; /* Equivalent to font-semibold in Tailwind */
+  color: #fff; /* Equivalent to text-white in Tailwind */
+}
+
+.active .step {
+  background-color: #4299e1; /* Replace with your bg-sky-600 color */
+}
+
+.complete .step {
+  background-color: #38a169; /* Replace with your bg-green-600 color */
+}
+
+.complete p {
+  color: #fff; /* Equivalent to text-white in Tailwind */
+}
+
+.complete:not(:first-child):before,
+.active:not(:first-child):before {
+  background-color: #38a169; /* Replace with your bg-green-600 color */
+}
