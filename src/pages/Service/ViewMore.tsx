@@ -585,7 +585,7 @@ const ViewMore = () => {
   
            
 {isDivVisible && (
-    <div className="absolute inset-0 mt-50 xl:pr-21  flex justify-end items-center">
+    <div className="absolute  inset-0 mt-80 xl:pr-21  flex justify-end items-center">
 
 <div className="border border-stroke  w-100  bg-white p-5 shadow-2xl dark:border-strokedark dark:bg-boxdark rounded-lg ">
   <div className="flex justify-between">

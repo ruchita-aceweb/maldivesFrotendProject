@@ -22,7 +22,7 @@ const TextField: React.FC<TextFieldProps> = (props) => {
         name={key}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-100 rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input"
+        className="w-70 rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input"
       />
     </div>
   );

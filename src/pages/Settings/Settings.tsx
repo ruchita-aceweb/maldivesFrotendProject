@@ -240,17 +240,18 @@ const Settings = () => {
 
             </form>
           </div>
-          <div className="   gap-5.5 px-9.5">
-          <div className="grid grid-cols-3 gap-10 justify-center">
+          <div className=" px-9.5">
+          <div className="grid grid-cols-3 gap-2 w-full justify-center">
   {text.map((item, index) => {
     if (item.type === "text") {
       return (
-        <div key={item.key} className="flex flex-col items-center">
+        <div key={item.key} className=" ">
           <TextField
             label={item.label}
             placeholder={item.placeholder}
             value={item.value}
             onChange={(value) => handleInputChange(index, value)}
+            
           />
         </div>
       );
