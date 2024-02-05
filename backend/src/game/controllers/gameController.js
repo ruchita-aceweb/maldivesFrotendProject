@@ -4,30 +4,44 @@ const games = ['Bhagyarekha', 'Dhan', 'Chetak'];
 
 const formatTime = (hour, minute) => {
   const suffix = hour >= 12 ? 'PM' : 'AM';
-  const formattedHour = hour > 12 ? hour - 12 : hour;
+  const formattedHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour; // Adjusted for 12 AM/PM
   const formattedMinute = minute === 0 ? '00' : minute;
   return `${formattedHour}:${formattedMinute}${suffix}`;
 };
 
 const createData = async (req, res) => {
   try {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+
     for (const game of games) {
-      for (let hour = 9; hour <= 21; hour++) {
-          for (let minute = 0; minute < 60; minute += 15) {
-              const time = formatTime(hour, minute);
-              const randomNumber = Math.floor(Math.random() * 90) + 10;
-              
-              await gameDetails.create({ game, time, randomNumber });
-            }
+      for (let hour = 9; hour <= currentHour; hour++) {
+        const isCurrentHour = hour === currentHour;
+        const lastMinute = isCurrentHour ? currentMinute : 59; // If it's the current hour, loop until the current minute
+
+        for (let minute = 0; minute <= lastMinute; minute += 15) {
+          // Adjust the minute increment condition for the current time
+          if (isCurrentHour && minute > currentMinute) {
+            break; // Break if beyond the current minute in the current hour
+          }
+          const time = formatTime(hour, minute);
+          const randomNumber = Math.floor(Math.random() * 90) + 10;
+          
+          await gameDetails.create({ game, time, randomNumber });
         }
+      }
     }
-    res.json({ message: 'Data create successfully',gameDetails });
-} catch (error) {
+    res.json({ message: 'Data created successfully'});
+  } catch (error) {
     console.error("Failed to create data:", error);
     res.status(500).json({ message: 'Internal server Error' });
-}
+  }
 };
 
+
+
+//----------------fetched --------------
 const fetchedData=async (req,res)=>{
     try {
         const data=await gameDetails.find();
