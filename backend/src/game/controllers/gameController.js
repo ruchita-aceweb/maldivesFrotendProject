@@ -1,19 +1,83 @@
-const gameDetails=require("../models/gameDetails");
+const gameDetails = require("../models/gameDetails");
 
-const createGame= async (req,res)=>{
+const games = ['Bhagyarekha', 'Dhan', 'Chetak'];
+
+const formatTime = (hour, minute) => {
+  const suffix = hour >= 12 ? 'PM' : 'AM';
+  const formattedHour = hour > 12 ? hour - 12 : hour;
+  const formattedMinute = minute === 0 ? '00' : minute;
+  return `${formattedHour}:${formattedMinute}${suffix}`;
+};
+
+const createData = async (req, res) => {
+  try {
+    for (const game of games) {
+      for (let hour = 9; hour <= 21; hour++) {
+          for (let minute = 0; minute < 60; minute += 15) {
+              const time = formatTime(hour, minute);
+              const randomNumber = Math.floor(Math.random() * 90) + 10;
+              
+              await gameDetails.create({ game, time, randomNumber });
+            }
+        }
+    }
+    res.json({ message: 'Data create successfully',gameDetails });
+} catch (error) {
+    console.error("Failed to create data:", error);
+    res.status(500).json({ message: 'Internal server Error' });
+}
+};
+
+const fetchedData=async (req,res)=>{
     try {
-         const data=req.body;
-         const {gameName,randomNumber,drawTime}=data;
-         const saveGame= await gameDetails.create(data);
-         res.status(201).send({message:"Game is Created Successfully",saveGame});
-        
+        const data=await gameDetails.find();
+        res.status(200).send({message:"Data successfully fetched",data});
     } catch (error) {
         console.log(error);
-        res.status(500).send({message:"Internal server Error",error});
+        res.status(500).send({message:"Internal server Error"})
     }
 }
 
+module.exports={createData,fetchedData}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const createGame= async (req,res)=>{
+//     try {
+//         //  const data=req.body;
+//         //  const {gameName,randomNumber,drawTime}=data;
+//         //  const saveGame= await gameDetails.create(data);
+//         //  res.status(201).send({message:"Game is Created Successfully",saveGame});
+
+
+        
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).send({message:"Internal server Error",error});
+//     }
+// }
 
 // Function to generate a two-digit number
 
@@ -33,5 +97,3 @@ const createGame= async (req,res)=>{
 //     console.log(Generated and saved data: ${twoDigitNumber} at ${timestamp});
 //   });
 
-
-module.exports={createGame}
