@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cron = require('node-cron');
 const userRoute=require("../src/user/routes/route")
-const gameRoute=require("../src/game/route/gameRoute")
+const adminRoute=require("./admin/route/adminRoute")
 const cors=require("cors");
 const app = express();
 const PORT =3001;
@@ -26,7 +26,7 @@ mongoose.connect('mongodb+srv://dileepkm:L3cuCdGwQQWTF3Hs@cluster0.iqkms8u.mongo
   });
 
 app.use("/api",userRoute);
-app.use("/api",gameRoute)
+app.use("/admin/api",adminRoute)
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

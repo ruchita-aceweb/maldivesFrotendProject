@@ -1,6 +1,8 @@
+const cron = require('node-cron');
 const gameDetails = require("../models/gameDetails");
 
 const games = ['Bhagyarekha', 'Dhan', 'Chetak'];
+
 
 const formatTime = (hour, minute) => {
   const suffix = hour >= 12 ? 'PM' : 'AM';
@@ -40,7 +42,6 @@ const createData = async (req, res) => {
 };
 
 
-
 //----------------fetched --------------
 const fetchedData=async (req,res)=>{
     try {
@@ -53,6 +54,94 @@ const fetchedData=async (req,res)=>{
 }
 
 module.exports={createData,fetchedData}
+
+
+//........................update................................
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const cron = require('node-cron');
+// const gameDetails = require("../models/gameDetails");
+
+// // Define the games array in the global scope
+// const games = ['Bhagyarekha', 'Dhan', 'Chetak'];
+
+// const formatTime = (hour, minute) => {
+//     const suffix = hour >= 12 ? 'PM' : 'AM';
+//     const formattedHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+//     const formattedMinute = minute === 0 ? '00' : minute;
+//     return `${formattedHour}:${formattedMinute}${suffix}`;
+// };
+
+// const createData = async () => {
+//     try {
+//         const now = new Date();
+//         const currentHour = now.getHours();
+//         const currentMinute = now.getMinutes();
+
+//         for (const game of games) {
+//             for (let hour = 9; hour <= currentHour; hour++) {
+//                 const isCurrentHour = hour === currentHour;
+//                 let lastMinute = isCurrentHour ? currentMinute : 59;
+
+//                 for (let minute = 0; minute <= lastMinute; minute += 15) {
+//                     if (isCurrentHour && minute > currentMinute) {
+//                         break;
+//                     }
+//                     const time = formatTime(hour, minute);
+//                     const randomNumber = Math.floor(Math.random() * 90) + 10;
+
+//                     await gameDetails.create({ game, time, randomNumber });
+//                 }
+//             }
+//         }
+//         console.log('Data created successfully');
+//     } catch (error) {
+//         console.error("Failed to create data:", error);
+//     }
+// };
+
+// // Schedule the job to run every 15 minutes
+// cron.schedule('*/15 * * * *', () => {
+//     console.log('Running createData task every 15 minutes');
+//     createData();
+// });
+
+  
+
+
 
 
 
